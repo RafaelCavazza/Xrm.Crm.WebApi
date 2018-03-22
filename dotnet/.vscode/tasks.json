@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build all",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "Xrm.Crm.WebApi Xrm.Crm.WebApi.ADAL Xrm.Crm.WebApi.Core"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Nuget Xrm.Crm.WebApi",
+            "command": "dotnet pack Xrm.Crm.WebApi -c Release -o publish",
+            "type": "process",
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
