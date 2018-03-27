@@ -35,9 +35,8 @@ namespace Xrm.Crm.WebApi
 
                 if(entityDefinitons!=null)
                     return entityDefinitons;
-
+                    
                 SetEntityDefinitions().GetAwaiter().GetResult();
-
                 return GetEntityDefinitions(name);
             }
         }
@@ -62,7 +61,7 @@ namespace Xrm.Crm.WebApi
             entitiesDefinitions = result["value"].ToObject<List<EntityDefinitions>>();
         }
 
-        public string GetCollectionName(string name)
+        public string GetEntitySetName(string name)
         {
             return this[name]?.EntitySetName;
         }

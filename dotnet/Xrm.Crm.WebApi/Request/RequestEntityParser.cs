@@ -51,7 +51,7 @@ namespace Xrm.Crm.WebApi.Request
         public static string EntityReferenceTostring(EntityReference entityReference, WebApiMetadata webApiMetadata)
         {
             var logicalName = entityReference.LogicalName.ToLower();
-            var entitySetName = webApiMetadata.GetCollectionName(logicalName);
+            var entitySetName = webApiMetadata.GetEntitySetName(logicalName);
 
             if(entityReference.KeyAttributes !=null && entityReference.KeyAttributes.Any())
                 return $"/{entitySetName}({string.Join("&",entityReference.KeyAttributes.Select( s => s.Key + "='" + s.Value.ToString() + "'"))})";
@@ -88,7 +88,7 @@ namespace Xrm.Crm.WebApi.Request
 
         public static string GetEntityApiUrl(Entity entity, WebApiMetadata webApiMetadata)
         {
-            var collectionName = webApiMetadata.GetCollectionName(entity.LogicalName);
+            var collectionName = webApiMetadata.GetEntitySetName(entity.LogicalName);
             if(entity.KeyAttributes != null &&  entity.KeyAttributes.Any())
                 return collectionName + "(" + string.Join("&",entity.KeyAttributes.Select( s => s.Key + "='" + s.Value.ToString() + "'")) + ")";
 

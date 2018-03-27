@@ -40,7 +40,7 @@ namespace Xrm.Crm.WebApi
 
         public async Task<Guid> CreateAsync(Entity entity)
         {   
-            var fullUrl = ApiUrl + WebApiMetadata.GetCollectionName(entity.LogicalName);
+            var fullUrl = ApiUrl + WebApiMetadata.GetEntitySetName(entity.LogicalName);
             var jObject = RequestEntityParser.EntityToJObject(entity, WebApiMetadata);
             var request = new HttpRequestMessage(new HttpMethod("Post"), fullUrl)
             {
@@ -67,7 +67,7 @@ namespace Xrm.Crm.WebApi
 
         public async Task<Entity> RetriveAsync(string entityName, Guid entityId)
         {
-            var entityCollection = WebApiMetadata.GetCollectionName(entityName);
+            var entityCollection = WebApiMetadata.GetEntitySetName(entityName);
             var fullUrl = ApiUrl + entityCollection + entityId.ToString("P");
             var request = new HttpRequestMessage(new HttpMethod("GET"), fullUrl);
             var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
@@ -94,7 +94,7 @@ namespace Xrm.Crm.WebApi
         
         public async Task<RetriveMultipleResponse> RetriveMultipleAsync(FetchXmlExpression fetchXml)
         {            
-            var entityCollection = WebApiMetadata.GetCollectionName(fetchXml.LogicalName);
+            var entityCollection = WebApiMetadata.GetEntitySetName(fetchXml.LogicalName);
             var retriveOptions =  new RetriveOptions { FetchXml = fetchXml };
             return await RetriveMultipleAsync(entityCollection, retriveOptions);
         }  
@@ -175,7 +175,7 @@ namespace Xrm.Crm.WebApi
 
         public async Task DeleteAsync(Entity entity)
         {
-            var fullUrl = ApiUrl + WebApiMetadata.GetCollectionName(entity.LogicalName);
+            var fullUrl = ApiUrl + WebApiMetadata.GetEntitySetName(entity.LogicalName);
             var request = new HttpRequestMessage(new HttpMethod("Delete"), fullUrl)
             {
                 Content = new StringContent("{}", Encoding.UTF8, "application/json")
