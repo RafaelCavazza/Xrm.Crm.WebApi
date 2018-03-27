@@ -78,7 +78,6 @@ namespace Xrm.Crm.WebApi
             var entity = ResponseAttributeFormatter.FormatEntityResponde(result);
             entity.LogicalName = entityName;
             entity.Id = entityId;
-
             return entity;
         }
      

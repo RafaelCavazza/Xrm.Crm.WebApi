@@ -52,11 +52,13 @@ namespace Xrm.Crm.WebApi.Request
         {
             var logicalName = entityReference.LogicalName.ToLower();
             var entitySetName = webApiMetadata.GetEntitySetName(logicalName);
+            if(entityReference.KeyAttributes?.Any() == true)
+            {
+                var keys = entityReference.KeyAttributes.Select( s => $"{s.Key}='{s.Value.ToString().Replace("'", "''")}'");
+                return $"{entitySetName}({string.Join("&",keys)})";
+            }
 
-            if(entityReference.KeyAttributes !=null && entityReference.KeyAttributes.Any())
-                return $"/{entitySetName}({string.Join("&",entityReference.KeyAttributes.Select( s => s.Key + "='" + s.Value.ToString() + "'"))})";
-                
-            return $"/{entitySetName}{entityReference.Id.ToString("P")}";
+            return $"/{entitySetName}{entityReference.Id.ToString("P")}";            
         }
 
         public static JObject ActivityPartyToJObject(ActivityParty activityParty, WebApiMetadata webApiMetadata)
@@ -88,14 +90,17 @@ namespace Xrm.Crm.WebApi.Request
 
         public static string GetEntityApiUrl(Entity entity, WebApiMetadata webApiMetadata)
         {
-            var collectionName = webApiMetadata.GetEntitySetName(entity.LogicalName);
-            if(entity.KeyAttributes != null &&  entity.KeyAttributes.Any())
-                return collectionName + "(" + string.Join("&",entity.KeyAttributes.Select( s => s.Key + "='" + s.Value.ToString() + "'")) + ")";
+            var entitySetName = webApiMetadata.GetEntitySetName(entity.LogicalName);
+            if(entity.KeyAttributes?.Any() == true)
+            {
+                var keys = entity.KeyAttributes.Select( s => $"{s.Key}='{s.Value.ToString().Replace("'", "''")}'");
+                return $"{entitySetName}({string.Join("&",keys)})";
+            }
 
             if(entity.Id != Guid.Empty)
-                return collectionName + entity.Id.ToString("P");
+                return entitySetName + entity.Id.ToString("P");
             
-            return collectionName;
+            return entitySetName;
         }
     }
 }
