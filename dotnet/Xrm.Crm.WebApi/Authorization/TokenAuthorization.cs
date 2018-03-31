@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http.Headers;
 
-namespace Xrm.Crm.WebApi.Core.Authorization
+namespace Xrm.Crm.WebApi.Authorization
 {
     public class TokenAuthorization : BaseAuthorization
     {

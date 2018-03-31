@@ -1,4 +1,4 @@
-namespace Xrm.Crm.WebApi.Core.Enums
+namespace Xrm.Crm.WebApi.Enums
 {
     public enum UpsertOptions
     {

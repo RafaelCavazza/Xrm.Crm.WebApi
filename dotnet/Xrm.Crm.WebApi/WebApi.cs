@@ -5,13 +5,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Xrm.Crm.WebApi.Core.Authorization;
+using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Reponse;
-using Xrm.Crm.WebApi.Core;
 using System.Collections.Generic;
 using Xrm.Crm.WebApi.Request;
 using System.Net.Http.Headers;
-using Xrm.Crm.WebApi.Core.Enums;
+using Xrm.Crm.WebApi.Enums;
 
 namespace Xrm.Crm.WebApi
 {

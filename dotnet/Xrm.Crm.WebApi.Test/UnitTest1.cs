@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi.ADAL;
-using Xrm.Crm.WebApi.Core;
+using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.BatchOperations;
-using Xrm.Crm.WebApi.Core.Enums;
+using Xrm.Crm.WebApi.Enums;
 using Xunit;
 
 namespace Xrm.Crm.WebApi.Test

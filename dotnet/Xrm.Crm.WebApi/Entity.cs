@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System;
 
-namespace Xrm.Crm.WebApi.Core
+namespace Xrm.Crm.WebApi
 {
     public class Entity
     {

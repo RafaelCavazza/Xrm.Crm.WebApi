@@ -4,7 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Xrm.Crm.WebApi.Core.Authorization;
+using Xrm.Crm.WebApi;
+using Xrm.Crm.WebApi.Authorization;
 
 namespace Xrm.Crm.WebApi.ADAL
 {

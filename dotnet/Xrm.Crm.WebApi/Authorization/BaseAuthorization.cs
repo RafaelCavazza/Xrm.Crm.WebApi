@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace Xrm.Crm.WebApi.Core.Authorization
+namespace Xrm.Crm.WebApi.Authorization
 {
     public abstract class BaseAuthorization
     {
