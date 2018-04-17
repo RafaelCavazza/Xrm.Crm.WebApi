@@ -211,9 +211,18 @@ namespace Xrm.Crm.WebApi
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
-        public object Qualify()
+        public void QualifyLead(QualifyLeadAction action)
         {
-            throw new NotImplementedException();
+            var fullUrl = $"{ApiUrl}/leads({action.LeadId.ToString("P")})/Microsoft.Dynamics.CRM.QualifyLead";
+            var jObject = new JObject();
+            jObject["CreateAccount"] = action.CreateAccount;
+            jObject["CreateContact"] = action.CreateContact;
+            jObject["CreateOpportunity"] = action.CreateOpportunity;
+            jObject["Status"] = action.Status;
+            //Bind Other values
+            var request = new HttpRequestMessage(new HttpMethod("POST"), fullUrl);
+            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            ResponseValidator.EnsureSuccessStatusCode(response);
         }
     }
 }
