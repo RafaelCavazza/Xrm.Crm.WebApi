@@ -14,7 +14,7 @@ namespace Xrm.Crm.WebApi
 
         public Guid LeadId {get;set;}
 
-        public QualifyLeadRequest(guid leadId, int status){
+        public QualifyLeadAction(Guid leadId, int status){
             LeadId = leadId;
             Status = status;
         }

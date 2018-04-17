@@ -7,7 +7,7 @@ using Xrm.Crm.WebApi;
 
 namespace Xrm.Crm.WebApi.Request
 {
-    internal static class RequestEntityParser
+    public static class RequestEntityParser
     {
         public static JObject EntityToJObject(Entity entity, WebApiMetadata webApiMetadata)
         {
@@ -47,7 +47,7 @@ namespace Xrm.Crm.WebApi.Request
 
             return jObject;
         }
-
+        
         public static string EntityReferenceTostring(EntityReference entityReference, WebApiMetadata webApiMetadata)
         {
             var logicalName = entityReference.LogicalName.ToLower();
