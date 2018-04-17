@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Xrm.Crm.WebApi.Core
+namespace Xrm.Crm.WebApi
 {
     public class FetchXmlExpression
     {

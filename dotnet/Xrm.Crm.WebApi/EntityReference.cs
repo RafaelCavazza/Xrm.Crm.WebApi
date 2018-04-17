@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Xrm.Crm.WebApi.Core
+namespace Xrm.Crm.WebApi
 {
     public class EntityReference
     {

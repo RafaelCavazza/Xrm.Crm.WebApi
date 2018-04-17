@@ -1,6 +1,6 @@
-using Xrm.Crm.WebApi.Core.Enums;
+using Xrm.Crm.WebApi.Enums;
 
-namespace Xrm.Crm.WebApi.Core
+namespace Xrm.Crm.WebApi
 {
     public class ActivityParty
     {

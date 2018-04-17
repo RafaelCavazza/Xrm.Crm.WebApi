@@ -11,8 +11,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Xrm.Crm.WebApi.Core\Xrm.Crm.WebApi.Core.csproj" />
-  </ItemGroup>
-
 </Project>

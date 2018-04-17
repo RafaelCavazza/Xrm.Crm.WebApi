@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi.Core;
+using Xrm.Crm.WebApi;
 using System;
 
 namespace Xrm.Crm.WebApi.Reponse

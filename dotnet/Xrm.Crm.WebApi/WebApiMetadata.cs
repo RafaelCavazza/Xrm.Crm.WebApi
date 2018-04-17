@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi.Core;
-using Xrm.Crm.WebApi.Core.Authorization;
+using Xrm.Crm.WebApi;
+using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Reponse;
 
 namespace Xrm.Crm.WebApi

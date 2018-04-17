@@ -1,4 +1,4 @@
-namespace Xrm.Crm.WebApi.Core
+namespace Xrm.Crm.WebApi
 {
     public class EntityDefinitions
     {

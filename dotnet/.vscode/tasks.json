@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "Xrm.Crm.WebApi Xrm.Crm.WebApi.ADAL Xrm.Crm.WebApi.Core"
+                "Xrm.Crm.WebApi Xrm.Crm.WebApi.ADAL Xrm.Crm.WebApi"
             ],
             "problemMatcher": "$msCompile"
         },

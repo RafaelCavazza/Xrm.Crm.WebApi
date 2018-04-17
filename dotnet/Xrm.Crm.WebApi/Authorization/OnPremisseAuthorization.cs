@@ -2,7 +2,7 @@
 using System.Net;
 using System.Security;
 
-namespace Xrm.Crm.WebApi.Core.Authorization
+namespace Xrm.Crm.WebApi.Authorization
 {
     public class OnPremisseAuthorization : BaseAuthorization
     {
