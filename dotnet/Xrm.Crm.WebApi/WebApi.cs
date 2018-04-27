@@ -179,7 +179,10 @@ namespace Xrm.Crm.WebApi {
             jIncidentResolution["timespent"] = incidentResolution.Timespent;
             jIncidentResolution["description"] = incidentResolution.Description;
 
-            var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl);
+            var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
+                Content = new StringContent (JsonConvert.SerializeObject (jObject), Encoding.UTF8, "application/json")
+            };
+        
             var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
             ResponseValidator.EnsureSuccessStatusCode (response);
         }
