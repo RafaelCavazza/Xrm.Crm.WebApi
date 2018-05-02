@@ -5,7 +5,7 @@ using Xrm.Crm.WebApi.Exception;
 
 namespace Xrm.Crm.WebApi
 {
-    public class RetriveOptions
+    public class RetrieveOptions
     {
         public string[] Select { get; set; }
         public string[] OrderBy { get; set; }
@@ -20,7 +20,7 @@ namespace Xrm.Crm.WebApi
         public Guid SavedQuery { get; set; }
         public Guid UserQuery { get; set; }
 
-        public string GetRetriveUrl(Uri apiUri)
+        public string GetRetrieveUrl(Uri apiUri)
         {
             if (apiUri == null)
                 throw new WebApiException("ApiUri can't be null");

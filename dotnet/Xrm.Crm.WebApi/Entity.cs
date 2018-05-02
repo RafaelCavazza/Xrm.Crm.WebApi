@@ -54,7 +54,7 @@ namespace Xrm.Crm.WebApi
         {
             get
             {
-                if (Contais(index))
+                if (Contains(index))
                     return Attributes[index];
                 return null;
             }
@@ -66,7 +66,7 @@ namespace Xrm.Crm.WebApi
 
         public T GetAttributeValue<T>(string atributeName)
         {
-            if (!Contais(atributeName))
+            if (!Contains(atributeName))
                 return default(T);
 
             if(typeof(T) == typeof(int))
@@ -75,7 +75,7 @@ namespace Xrm.Crm.WebApi
             return (T)Attributes[atributeName];
         }
 
-        public bool Contais(string atributeName)
+        public bool Contains(string atributeName)
         {        
             return !string.IsNullOrWhiteSpace(atributeName) && Attributes.ContainsKey(atributeName);
         }

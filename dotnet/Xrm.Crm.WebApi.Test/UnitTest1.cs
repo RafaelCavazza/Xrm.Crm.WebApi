@@ -23,7 +23,7 @@ namespace Xrm.Crm.WebApi.Test
         }   
 
         [Fact]
-        public void RetriveSingle()
+        public void RetrieveSingle()
         {
         }
     }

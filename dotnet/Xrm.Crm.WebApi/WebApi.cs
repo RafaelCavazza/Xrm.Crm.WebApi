@@ -51,11 +51,11 @@ namespace Xrm.Crm.WebApi {
             return new Guid (headerValue.Replace (fullUrl, "").Replace ("(", String.Empty).Replace (")", String.Empty));
         }
 
-        public Entity Retrive (string entityName, Guid entityId) {
-            return RetriveAsync (entityName, entityId).GetAwaiter ().GetResult ();
+        public Entity Retrieve (string entityName, Guid entityId) {
+            return RetrieveAsync (entityName, entityId).GetAwaiter ().GetResult ();
         }
 
-        public async Task<Entity> RetriveAsync (string entityName, Guid entityId) {
+        public async Task<Entity> RetrieveAsync (string entityName, Guid entityId) {
             var entityCollection = WebApiMetadata.GetEntitySetName (entityName);
             var fullUrl = ApiUrl + entityCollection + entityId.ToString ("P");
             var request = new HttpRequestMessage (new HttpMethod ("GET"), fullUrl);
@@ -70,23 +70,23 @@ namespace Xrm.Crm.WebApi {
             return entity;
         }
 
-        public RetriveMultipleResponse RetriveMultiple (string entityCollection, RetriveOptions options) {
-            return RetriveMultipleAsync (entityCollection, options).GetAwaiter ().GetResult ();
+        public RetrieveMultipleResponse RetrieveMultiple (string entityCollection, RetrieveOptions options) {
+            return RetrieveMultipleAsync (entityCollection, options).GetAwaiter ().GetResult ();
         }
 
-        public RetriveMultipleResponse RetriveMultiple (FetchXmlExpression fetchXml) {
-            return RetriveMultipleAsync (fetchXml).GetAwaiter ().GetResult ();
+        public RetrieveMultipleResponse RetrieveMultiple (FetchXmlExpression fetchXml) {
+            return RetrieveMultipleAsync (fetchXml).GetAwaiter ().GetResult ();
         }
 
-        public async Task<RetriveMultipleResponse> RetriveMultipleAsync (FetchXmlExpression fetchXml) {
+        public async Task<RetrieveMultipleResponse> RetrieveMultipleAsync (FetchXmlExpression fetchXml) {
             var entityCollection = WebApiMetadata.GetEntitySetName (fetchXml.LogicalName);
-            var retriveOptions = new RetriveOptions { FetchXml = fetchXml };
-            return await RetriveMultipleAsync (entityCollection, retriveOptions);
+            var retrieveOptions = new RetrieveOptions { FetchXml = fetchXml };
+            return await RetrieveMultipleAsync (entityCollection, retrieveOptions);
         }
 
-        public async Task<RetriveMultipleResponse> RetriveMultipleAsync (string entityCollection, RetriveOptions options) {
+        public async Task<RetrieveMultipleResponse> RetrieveMultipleAsync (string entityCollection, RetrieveOptions options) {
             var fullUrl = ApiUrl + entityCollection;
-            fullUrl = options.GetRetriveUrl (new Uri (fullUrl));
+            fullUrl = options.GetRetrieveUrl (new Uri (fullUrl));
             var request = new HttpRequestMessage (new HttpMethod ("GET"), fullUrl);
 
             foreach (var header in options.GetPreferList ())
@@ -97,28 +97,28 @@ namespace Xrm.Crm.WebApi {
 
             var data = await response.Content.ReadAsStringAsync ();
             var result = JObject.Parse (data);
-            var retriveMultipleResponse = new RetriveMultipleResponse (result);
+            var retrieveMultipleResponse = new RetrieveMultipleResponse (result);
 
-            while (!string.IsNullOrWhiteSpace (retriveMultipleResponse.NextLink)) {
-                var nextResults = await _baseAuthorization.GetHttpCliente ().GetAsync (retriveMultipleResponse.NextLink);
+            while (!string.IsNullOrWhiteSpace (retrieveMultipleResponse.NextLink)) {
+                var nextResults = await _baseAuthorization.GetHttpCliente ().GetAsync (retrieveMultipleResponse.NextLink);
                 ResponseValidator.EnsureSuccessStatusCode (nextResults);
                 var nextData = await nextResults.Content.ReadAsStringAsync ();
                 var nextValues = JObject.Parse (nextData);
-                retriveMultipleResponse.AddResult (nextValues);
+                retrieveMultipleResponse.AddResult (nextValues);
             }
 
             var logicalName = WebApiMetadata.GetLogicalName (entityCollection);
             var entityDefinition = WebApiMetadata.EntitiesDefinitions.FirstOrDefault (e => e.LogicalName == logicalName);
             var primaryKey = entityDefinition?.PrimaryIdAttribute;
 
-            foreach (var entity in retriveMultipleResponse.Entities) {
+            foreach (var entity in retrieveMultipleResponse.Entities) {
                 if (entity.Contais (primaryKey))
                     entity.Id = Guid.Parse (entity.GetAttributeValue<string> (primaryKey));
 
                 entity.LogicalName = logicalName;
             }
 
-            return retriveMultipleResponse;
+            return retrieveMultipleResponse;
         }
 
         public void Update (Entity entity) {

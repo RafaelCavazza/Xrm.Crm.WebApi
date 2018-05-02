@@ -5,7 +5,7 @@ using Xrm.Crm.WebApi;
 
 namespace Xrm.Crm.WebApi.Reponse
 {
-    public class RetriveMultipleResponse
+    public class RetrieveMultipleResponse
     {
         public List<Entity> Entities { get; set; }
         public string NextLink { get; set; }
@@ -13,7 +13,7 @@ namespace Xrm.Crm.WebApi.Reponse
         public string FetchxmlPagingCookie { get; set; }
         public string OdataContext { get; set; }
 
-        public RetriveMultipleResponse(JObject result)
+        public RetrieveMultipleResponse(JObject result)
         {
             Entities = new List<Entity>();
             AddResult(result);
