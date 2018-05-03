@@ -112,7 +112,7 @@ namespace Xrm.Crm.WebApi {
             var primaryKey = entityDefinition?.PrimaryIdAttribute;
 
             foreach (var entity in retrieveMultipleResponse.Entities) {
-                if (entity.Contais (primaryKey))
+                if (entity.Contains (primaryKey))
                     entity.Id = Guid.Parse (entity.GetAttributeValue<string> (primaryKey));
 
                 entity.LogicalName = logicalName;
