@@ -6,14 +6,13 @@ namespace Xrm.Crm.WebApi
 {
     public class EntityReference
     {
-        public string LogicalName {get; internal set;}
+        public string LogicalName {get; internal set;}        
         public Guid Id {get; internal set;}
+        public string Name {get; set;}
         public Dictionary<string, object> KeyAttributes { get; set; }
         
-        public EntityReference(string logicalName, string id)
+        public EntityReference(string logicalName, string id) : this (logicalName, new Guid(id))
         {
-            LogicalName = logicalName.ToLower();
-            Id = new Guid(id);
         }
 
         public EntityReference(string logicalName, Guid id)
@@ -21,7 +20,6 @@ namespace Xrm.Crm.WebApi
             LogicalName = logicalName.ToLower();
             Id = id;
         }
-
 
         public EntityReference(string logicalName, string keyName, object keyValue)
         {

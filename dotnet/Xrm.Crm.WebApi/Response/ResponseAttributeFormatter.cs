@@ -14,10 +14,9 @@ namespace Xrm.Crm.WebApi.Reponse
             var etag = jObject["@odata.etag"]?.ToString();
             var formatedValues = new Dictionary<string, string>();
             var attributes = jObject.ToObject<Dictionary<string, object>>();
-
             var newAttributes = new Dictionary<string, object>(); 
 
-            //----> Entities References
+
             var enttyReferenceAttributes = attributes
                 .Where(a => a.Key.StartsWith("_") && a.Key.EndsWith("_value"))
                 .ToList();
@@ -30,11 +29,14 @@ namespace Xrm.Crm.WebApi.Reponse
                 
                 var logicalname = complements.First(a => a.Key.Contains("lookuplogicalname")).Value.ToString();
                 var entityReference = new EntityReference(logicalname,enttyReferenceAttribute.Value.ToString());
+                entityReference.Name = complements.FirstOrDefault(c=> c.Key.Contains("FormattedValue")).Value?.ToString();
+
                 var attributeName = FormatAttributeName(enttyReferenceAttribute.Key);
                 newAttributes.Add(attributeName, entityReference);
 
                 foreach (var attribute in complements)
-                    attributes.Remove(attribute.Key);
+                    if(!attribute.Key.Contains("FormattedValue"))
+                        attributes.Remove(attribute.Key);
             }
 
             foreach (var atribute in attributes)
