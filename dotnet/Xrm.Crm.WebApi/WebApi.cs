@@ -12,6 +12,7 @@ using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Enums;
 using Xrm.Crm.WebApi.Reponse;
 using Xrm.Crm.WebApi.Request;
+using Xrm.Crm.WebApi.Metadata;
 
 namespace Xrm.Crm.WebApi {
     public partial class WebApi {

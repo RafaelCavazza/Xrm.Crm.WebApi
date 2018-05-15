@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
+using Xrm.Crm.WebApi.Metadata;
 
 namespace Xrm.Crm.WebApi.Request
 {
