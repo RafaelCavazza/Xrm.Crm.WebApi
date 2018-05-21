@@ -48,7 +48,7 @@ namespace Xrm.Crm.WebApi {
         private Guid GetEntityIdFromResponse (string fullUrl, HttpResponseMessage response) {
             var headers = response.Headers;
             var headerValue = headers.First (h => h.Key.Contains ("OData-EntityId")).Value.First ();
-            return new Guid (headerValue.Replace (fullUrl, "").Replace ("(", String.Empty).Replace (")", String.Empty));
+            return new Guid( headerValue.Split('(').Last().Split(')')[0] );
         }
 
         public Entity Retrieve (string entityName, Guid entityId) {
@@ -129,11 +129,11 @@ namespace Xrm.Crm.WebApi {
             await UpsertAsync (entity, UpsertOptions.OnlyUpdate);
         }
 
-        public void Upsert (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None) {
-            UpsertAsync (entity).GetAwaiter ().GetResult ();
+        public Guid Upsert (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None) {
+            return UpsertAsync (entity, upsertOptions).GetAwaiter ().GetResult ();
         }
 
-        public async Task UpsertAsync (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None) {
+        public async Task<Guid> UpsertAsync (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None) {
             var fullUrl = ApiUrl + RequestEntityParser.GetEntityApiUrl (entity, WebApiMetadata);
             var jObject = RequestEntityParser.EntityToJObject (entity, WebApiMetadata);
             var request = new HttpRequestMessage (new HttpMethod ("PATCH"), fullUrl) {
@@ -148,6 +148,7 @@ namespace Xrm.Crm.WebApi {
 
             var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
             ResponseValidator.EnsureSuccessStatusCode (response);
+            return GetEntityIdFromResponse (fullUrl, response);
         }
 
         public async Task DeleteAsync (Entity entity) {

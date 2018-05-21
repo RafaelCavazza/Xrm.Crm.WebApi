@@ -24,7 +24,7 @@ namespace Xrm.Crm.WebApi.Test
 
         [Fact]
         public void RetrieveSingle()
-        {
+        {   
         }
     }
 }
