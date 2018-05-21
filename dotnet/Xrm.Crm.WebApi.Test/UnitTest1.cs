@@ -25,11 +25,6 @@ namespace Xrm.Crm.WebApi.Test
         [Fact]
         public void RetrieveSingle()
         {   
-            var serverToServerAuthentication = new ServerToServerAuthentication(crmConnectionString);
-            var webApi = new WebApi(serverToServerAuthentication);
-            var entity = new Entity("email", new Guid("0669f613-355d-e811-812e-e0071b6fd061"));
-            var id = webApi.Upsert(entity);
-            subject
         }
     }
 }
