@@ -72,8 +72,8 @@ namespace Xrm.Crm.WebApi
             if(typeof(T) == typeof(int))
                 return (T) (object)Convert.ToInt32(Attributes[atributeName]);
 
-            if(typeof(DateTime) == typeof(T) && Attributes[atributeName] is string)
-                return (T) (object) DateTime.Parse( (string) Attributes[atributeName]);
+            if( ( typeof(DateTime) == typeof(T) ||  typeof(DateTime?) == typeof(T) ) && Attributes[atributeName] is string)
+                return (T) (object) Convert.ToDateTime(Attributes[atributeName]);
 
             return (T)Attributes[atributeName];
         }
