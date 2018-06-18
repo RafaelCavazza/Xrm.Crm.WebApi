@@ -177,7 +177,8 @@ namespace Xrm.Crm.WebApi {
             jObject["IncidentResolution"] = jIncidentResolution;
             jIncidentResolution["subject"] = incidentResolution.Subject;
             jIncidentResolution["incidentid@odata.bind"] = $"/incidents{incidentResolution.IncidentId.ToString("P")}";
-            jIncidentResolution["timespent"] = incidentResolution.Timespent;
+            if(incidentResolution.Timespent != null)
+                jIncidentResolution["timespent"] = incidentResolution.Timespent;
             jIncidentResolution["description"] = incidentResolution.Description;
 
             var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
