@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Xrm.Crm.WebApi.Authorization;
+using Newtonsoft.Json;
 
-namespace Xrm.Crm.WebApi.ADAL
+namespace Xrm.Crm.WebApi.Authorization
 {
     public class ServerToServerAuthentication : BaseAuthorization
     {
@@ -15,7 +13,7 @@ namespace Xrm.Crm.WebApi.ADAL
         private readonly string _clientSecret;
         private readonly Guid _tenantId;
         private const string Authority = "https://login.microsoftonline.com/";
-        private AuthenticationResult _authenticationResult;
+        private AuthenticationResult AuthenticationResult;
 
 
         public ServerToServerAuthentication(string crmConnectionString)
@@ -25,7 +23,7 @@ namespace Xrm.Crm.WebApi.ADAL
             _crmBaseUrl = keys["crmBaseUrl"];
             _clientSecret = keys["clientSecret"];
             _tenantId = Guid.Parse(keys["tenantId"]);
-            _authenticationResult = null;
+            AuthenticationResult = null;
         }
 
         public ServerToServerAuthentication(Guid clientId, string clientSecret, string crmBaseUrl, Guid tenantId)
@@ -34,7 +32,7 @@ namespace Xrm.Crm.WebApi.ADAL
             _crmBaseUrl = crmBaseUrl;
             _clientSecret = clientSecret;
             _tenantId = tenantId;
-            _authenticationResult = null;
+            AuthenticationResult = null;
         }
 
         public override void RefreshCredentials()
@@ -44,20 +42,28 @@ namespace Xrm.Crm.WebApi.ADAL
 
         public string GetAccessToken()
         {
-            if (_authenticationResult != null && _authenticationResult.ExpiresOn > DateTimeOffset.UtcNow)
-                return _authenticationResult.AccessToken;
+            if (AuthenticationResult != null && AuthenticationResult.IsValid())
+                return AuthenticationResult.AccessToken;
 
             RefreshAccessToken();
-            return _authenticationResult.AccessToken;
+            return AuthenticationResult.AccessToken;
         }
 
         private void RefreshAccessToken()
         {
-            var clientcred = new ClientCredential(_clientId.ToString(), _clientSecret);
-            var authContext = new AuthenticationContext(Authority + _tenantId);
-            var authenticationResult = authContext.AcquireTokenAsync(_crmBaseUrl, clientcred);
-            authenticationResult.Wait();
-            _authenticationResult =  authenticationResult.Result;
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                new KeyValuePair<string, string>("client_id", _clientId.ToString()),
+                new KeyValuePair<string, string>("client_secret", _clientSecret),
+                new KeyValuePair<string, string>("resource", _crmBaseUrl)
+            });
+            
+            var result = httpClient.PostAsync(GetOauth2Url(), content).GetAwaiter().GetResult();
+            result.EnsureSuccessStatusCode();
+            
+            string resultContent = result.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            AuthenticationResult = JsonConvert.DeserializeObject<AuthenticationResult>(resultContent);
         }
 
         public override string GetCrmBaseUrl()
@@ -78,6 +84,10 @@ namespace Xrm.Crm.WebApi.ADAL
             }
 
             return keysDictionary;
+        }
+
+        private string GetOauth2Url(){
+            return $"{Authority}/{_tenantId.ToString("D")}/oauth2/token";
         }
     }
 }
