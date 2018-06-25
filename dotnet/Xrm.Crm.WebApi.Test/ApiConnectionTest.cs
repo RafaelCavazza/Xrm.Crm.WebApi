@@ -14,7 +14,6 @@ namespace Xrm.Crm.WebApi.Test
     {
         private static string crmConnectionString = Environment.GetEnvironmentVariable("CRM_CONNECTION",EnvironmentVariableTarget.Machine);
         private static WebApi WebApi;
-        private static Guid LeadId;
 
         public ApiConnectionTest(){
             if(!crmConnectionString.ToUpper().Contains("HML"))
@@ -39,14 +38,6 @@ namespace Xrm.Crm.WebApi.Test
             LeadId = WebApi.Create(lead);
 
             Assert.NotEqual(LeadId, Guid.Empty);
-        }
-
-        [Fact]
-        public void RetrieveSingle()
-        {   
-            var lead = WebApi.Retrieve("lead",LeadId);
-            Assert.True(lead.GetAttributeValue<string>("firstname") == "Test");
-            Assert.True(lead.GetAttributeValue<string>("lastname") == "Test");
         }
     }
 }
