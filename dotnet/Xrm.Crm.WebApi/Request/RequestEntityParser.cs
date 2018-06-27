@@ -42,7 +42,7 @@ namespace Xrm.Crm.WebApi.Request
                 }
                 else
                 {
-                    jObject[attibute.Key] = (dynamic) attibute.Value;
+                    jObject[attibute.Key] = JValue.FromObject(attibute.Value);
                 }
             }
 
