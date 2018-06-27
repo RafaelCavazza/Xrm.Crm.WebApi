@@ -49,7 +49,7 @@ namespace Xrm.Crm.WebApi {
         private Guid GetEntityIdFromResponse (string fullUrl, HttpResponseMessage response) {
             var headers = response.Headers;
             var headerValue = headers.First (h => h.Key.Contains ("OData-EntityId")).Value.First ();
-            return new Guid (headerValue.Replace (fullUrl, "").Replace ("(", String.Empty).Replace (")", String.Empty));
+            return new Guid( headerValue.Split('(').Last().Split(')')[0] );
         }
 
         public Entity Retrieve (string entityName, Guid entityId) {
@@ -131,7 +131,7 @@ namespace Xrm.Crm.WebApi {
         }
 
         public void Upsert (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None) {
-            UpsertAsync (entity).GetAwaiter ().GetResult ();
+            UpsertAsync (entity, upsertOptions).GetAwaiter ().GetResult ();
         }
 
         public async Task UpsertAsync (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None) {
@@ -177,7 +177,8 @@ namespace Xrm.Crm.WebApi {
             jObject["IncidentResolution"] = jIncidentResolution;
             jIncidentResolution["subject"] = incidentResolution.Subject;
             jIncidentResolution["incidentid@odata.bind"] = $"/incidents{incidentResolution.IncidentId.ToString("P")}";
-            jIncidentResolution["timespent"] = incidentResolution.Timespent;
+            if(incidentResolution.Timespent != null)
+                jIncidentResolution["timespent"] = incidentResolution.Timespent;
             jIncidentResolution["description"] = incidentResolution.Description;
 
             var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
