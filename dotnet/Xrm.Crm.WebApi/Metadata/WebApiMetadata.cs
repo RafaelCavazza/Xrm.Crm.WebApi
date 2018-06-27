@@ -15,7 +15,10 @@ namespace Xrm.Crm.WebApi.Metadata
         private readonly BaseAuthorization _baseAuthorization;
         private readonly Uri _apiUrl;
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
+        private readonly string _relationshipDefinitions = "RelationshipDefinitions/Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata?$select=SchemaName, ReferencedAttribute, ReferencedEntity, ReferencingAttribute, ReferencingEntity, ReferencedEntityNavigationPropertyName, ReferencingEntityNavigationPropertyName";
         private readonly string _attributeMetadata = " &$expand=Attributes($select=SchemaName)";
+
+        private List<RelationshipDefinitions> RelationshipDefinitions;
         private List<EntityDefinitions> entitiesDefinitions {get; set;}
         public List<EntityDefinitions> EntitiesDefinitions 
         {
@@ -28,6 +31,7 @@ namespace Xrm.Crm.WebApi.Metadata
             }
         }
         public bool LoadAttributes {get; set;}
+        public bool LoadRelationshipDefinitions {get; set;}
 
         public EntityDefinitions this[string name]
         {
@@ -85,6 +89,18 @@ namespace Xrm.Crm.WebApi.Metadata
                     (e.CollectionSchemaName?.ToLower()??"").Equals(anyName.ToLower()) ||
                     (e.EntitySetName?.ToLower()??"").Equals(anyName.ToLower())
                 );
+        }
+
+
+        private async Task<List<RelationshipDefinitions>> GetRelationshipDefinitions(){
+            var url = _apiUrl + _relationshipDefinitions;
+            using(var request = new HttpRequestMessage(new HttpMethod("GET"), url)){
+                var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+                ResponseValidator.EnsureSuccessStatusCode(response);
+                var data = await response.Content.ReadAsStringAsync();
+                var result = JObject.Parse(data);
+                return result["value"].ToObject<List<RelationshipDefinitions>>();
+            }        
         }
     }
 }
