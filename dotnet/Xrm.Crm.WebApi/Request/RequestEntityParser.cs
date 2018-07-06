@@ -12,13 +12,21 @@ namespace Xrm.Crm.WebApi.Request
     {
         public static JObject EntityToJObject(Entity entity, WebApiMetadata webApiMetadata)
         {
-            var jObject = new JObject();
+            var jObject = new JObject();           
+            var entityDefinitions = webApiMetadata.GetEntityDefinitions(entity.LogicalName);
 
             foreach(var attibute in entity.Attributes)
             {
+                var key = attibute.Key;
+
+                if(webApiMetadata.LoadAttributes){
+                    var atributo = entityDefinitions.Attributes.FirstOrDefault(a => a.SchemaName.ToLower().Equals(attibute.Key.ToLower()));
+                    key = atributo.SchemaName ?? key;
+                }
+
                 if(attibute.Value is EntityReference) 
                 {            
-                    jObject[attibute.Key + "@odata.bind"] = EntityReferenceTostring((EntityReference)attibute.Value, webApiMetadata);
+                    jObject[key + "@odata.bind"] = EntityReferenceTostring((EntityReference)attibute.Value, webApiMetadata);
                 }
                 else if (IsActivityPartyEnumerable(attibute.Value))
                 {
@@ -29,7 +37,7 @@ namespace Xrm.Crm.WebApi.Request
                         jArray.Add(ActivityPartyToJObject(activityParty, webApiMetadata));
                     }
 
-                    jObject[attibute.Key] = jArray;
+                    jObject[key] = jArray;
                 }
                 else if(attibute.Value is List<Entity>)
                 {
@@ -38,11 +46,11 @@ namespace Xrm.Crm.WebApi.Request
                     {
                         objects.Add(EntityToJObject(nestedEntity, webApiMetadata));
                     }
-                    jObject[attibute.Key] = objects;
+                    jObject[key] = objects;
                 }
                 else
                 {
-                    jObject[attibute.Key] = JValue.FromObject(attibute.Value);
+                    jObject[key] = JValue.FromObject(attibute.Value);
                 }
             }
 

@@ -15,10 +15,9 @@ namespace Xrm.Crm.WebApi.Metadata
         private readonly BaseAuthorization _baseAuthorization;
         private readonly Uri _apiUrl;
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
-        private readonly string _relationshipDefinitions = "RelationshipDefinitions/Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata?$select=SchemaName, ReferencedAttribute, ReferencedEntity, ReferencingAttribute, ReferencingEntity, ReferencedEntityNavigationPropertyName, ReferencingEntityNavigationPropertyName";
+        private readonly string _relationshipDefinitions = "RelationshipDefinitions/Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata?$select=SchemaName,ReferencedAttribute,ReferencedEntity,ReferencingAttribute,ReferencingEntity,ReferencedEntityNavigationPropertyName,ReferencingEntityNavigationPropertyName";
         private readonly string _attributeMetadata = " &$expand=Attributes($select=SchemaName)";
-
-        private List<RelationshipDefinitions> RelationshipDefinitions;
+                
         private List<EntityDefinitions> entitiesDefinitions {get; set;}
         public List<EntityDefinitions> EntitiesDefinitions 
         {
@@ -30,6 +29,19 @@ namespace Xrm.Crm.WebApi.Metadata
                 return entitiesDefinitions;
             }
         }
+
+        private List<RelationshipDefinitions> relationshipDefinitions {get; set;}
+        public List<RelationshipDefinitions> RelationshipDefinitions 
+        {
+            get
+            {
+                if(relationshipDefinitions == null)
+                    SetRelationshipDefinitions().GetAwaiter().GetResult();
+                
+                return relationshipDefinitions;
+            }
+        }
+
         public bool LoadAttributes {get; set;}
         public bool LoadRelationshipDefinitions {get; set;}
 
@@ -54,7 +66,6 @@ namespace Xrm.Crm.WebApi.Metadata
             _baseAuthorization = baseAuthorization;
             _baseAuthorization.ConfigHttpClient();
             _apiUrl = new Uri(apiUrl);
-            LoadAttributes = true;
         }
 
         public async Task SetEntityDefinitions()
@@ -82,7 +93,7 @@ namespace Xrm.Crm.WebApi.Metadata
             return this[name]?.LogicalName;
         }
 
-        private EntityDefinitions GetEntityDefinitions(string anyName)
+        public EntityDefinitions GetEntityDefinitions(string anyName)
         {
             return EntitiesDefinitions.FirstOrDefault(e => 
                     (e.LogicalName?.ToLower()??"").Equals(anyName.ToLower()) ||
@@ -91,16 +102,28 @@ namespace Xrm.Crm.WebApi.Metadata
                 );
         }
 
+        public RelationshipDefinitions GetRelationshipDefinitions(string referencingEntity , string referencingAttribute, string referencedEntity){              
+            var relationship = RelationshipDefinitions.FirstOrDefault(r => 
+                    r.ReferencingEntity.ToLower()  == referencingEntity.ToLower() && 
+                    r.ReferencingAttribute.ToLower() == referencingAttribute &&
+                    r.ReferencedEntity.ToLower() == referencedEntity.ToLower()
+                );
+                
+            return relationship;
+        }
 
-        private async Task<List<RelationshipDefinitions>> GetRelationshipDefinitions(){
+        private async Task SetRelationshipDefinitions(){
+            if(!LoadRelationshipDefinitions)
+                return;
+
             var url = _apiUrl + _relationshipDefinitions;
             using(var request = new HttpRequestMessage(new HttpMethod("GET"), url)){
                 var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
                 ResponseValidator.EnsureSuccessStatusCode(response);
                 var data = await response.Content.ReadAsStringAsync();
                 var result = JObject.Parse(data);
-                return result["value"].ToObject<List<RelationshipDefinitions>>();
-            }        
+                relationshipDefinitions = result["value"].ToObject<List<RelationshipDefinitions>>();
+            }  
         }
     }
 }
