@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xrm.Crm.WebApi;
 
-namespace Xrm.Crm.WebApi.Reponse
+namespace Xrm.Crm.WebApi.Response
 {
     public class RetrieveMultipleResponse
     {

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
 using System;
 
-namespace Xrm.Crm.WebApi.Reponse
+namespace Xrm.Crm.WebApi.Response
 {
     internal static class ResponseAttributeFormatter
     {

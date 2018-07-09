@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
-using Xrm.Crm.WebApi.Reponse;
+using Xrm.Crm.WebApi.Response;
 
 namespace Xrm.Crm.WebApi
 {
@@ -71,7 +71,7 @@ namespace Xrm.Crm.WebApi
             return this[name]?.LogicalName;
         }
 
-        private EntityDefinitions GetEntityDefinitions(string anyName)
+        public EntityDefinitions GetEntityDefinitions(string anyName)
         {
             return EntitiesDefinitions.FirstOrDefault(e => 
                     (e.LogicalName?.ToLower()??"").Equals(anyName.ToLower()) ||
