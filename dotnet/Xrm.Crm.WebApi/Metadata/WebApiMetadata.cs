@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
+using Xrm.Crm.WebApi.Exception;
 using Xrm.Crm.WebApi.Reponse;
 
 namespace Xrm.Crm.WebApi.Metadata
@@ -108,13 +109,13 @@ namespace Xrm.Crm.WebApi.Metadata
                     r.ReferencingAttribute.ToLower() == referencingAttribute &&
                     r.ReferencedEntity.ToLower() == referencedEntity.ToLower()
                 );
-                
+
             return relationship;
         }
 
         private async Task SetRelationshipDefinitions(){
             if(!LoadRelationshipDefinitions)
-                return;
+                throw new WebApiException("Can't load RelationshipDefinitions the 'LoadRelationshipDefinitions' property is set to false.");
 
             var url = _apiUrl + _relationshipDefinitions;
             using(var request = new HttpRequestMessage(new HttpMethod("GET"), url)){
