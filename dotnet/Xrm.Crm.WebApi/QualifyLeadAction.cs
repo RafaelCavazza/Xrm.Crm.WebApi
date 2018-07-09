@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace Xrm.Crm.WebApi
 {
@@ -18,6 +19,26 @@ namespace Xrm.Crm.WebApi
         public QualifyLeadAction(Guid leadId, int status){
             LeadId = leadId;
             Status = status;
+        }
+
+        public JObject GetRequestObject(){
+
+            var jObject = new JObject ();
+            jObject["CreateAccount"] = CreateAccount;
+            jObject["CreateContact"] = CreateContact;
+            jObject["CreateOpportunity"] = CreateOpportunity;
+            jObject["Status"] = Status;
+
+            if(OpportunityCurrencyId != null)
+                jObject["OpportunityCurrencyId"] = OpportunityCurrencyId;
+
+            if(SourceCampaignId != null)
+                jObject["SourceCampaignId"] = SourceCampaignId;
+
+            if(ProcessInstanceId != null)
+                jObject["ProcessInstanceId"] = ProcessInstanceId;     
+            
+            return jObject;
         }
     }
 }
