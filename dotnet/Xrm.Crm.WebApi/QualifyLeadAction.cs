@@ -10,6 +10,7 @@ namespace Xrm.Crm.WebApi
         public Guid? OpportunityCurrencyId {get;set;}
         public Guid? OpportunityCustomerId {get;set;}
         public Guid? SourceCampaignId {get;set;}
+        public Guid? ProcessInstanceId {get;set;}
         public int Status {get;set;}
 
         public Guid LeadId {get;set;}
