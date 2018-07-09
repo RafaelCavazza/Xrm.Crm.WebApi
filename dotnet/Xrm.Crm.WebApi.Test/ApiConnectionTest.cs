@@ -35,7 +35,7 @@ namespace Xrm.Crm.WebApi.Test
             var lead = new Entity("lead");
             lead["firstname"] = "Test";
             lead["lastname"] = "Test";
-            LeadId = WebApi.Create(lead);
+            var LeadId = WebApi.Create(lead);
 
             Assert.NotEqual(LeadId, Guid.Empty);
         }
