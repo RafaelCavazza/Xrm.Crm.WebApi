@@ -9,7 +9,7 @@ namespace Xrm.Crm.WebApi.Reponse
 {
     internal static class ResponseAttributeFormatter
     {
-        public static Entity FormatEntityResponde(JObject jObject)
+        public static Entity FormatEntityResponse(JObject jObject)
         {
             var etag = jObject["@odata.etag"]?.ToString();
             var formatedValues = new Dictionary<string, string>();

@@ -23,7 +23,7 @@ namespace Xrm.Crm.WebApi.Reponse
         {
             foreach (JObject value in result["value"]?.ToList())
             {
-                var entity = ResponseAttributeFormatter.FormatEntityResponde(value);
+                var entity = ResponseAttributeFormatter.FormatEntityResponse(value);
                 Entities.Add(entity);
             }
 
