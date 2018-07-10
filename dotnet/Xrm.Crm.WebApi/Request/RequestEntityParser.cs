@@ -17,6 +17,7 @@ namespace Xrm.Crm.WebApi.Request
 
             foreach(var attibute in entity.Attributes)
             {
+<<<<<<< HEAD
                 var key = attibute.Key;
 
                 if(webApiMetadata.LoadAttributes){
@@ -25,6 +26,13 @@ namespace Xrm.Crm.WebApi.Request
                 }
 
                 if(attibute.Value is EntityReference) 
+=======
+                if(attibute.Value == null)
+                {
+                    jObject[attibute.Key] = null;
+                }
+                else if(attibute.Value is EntityReference) 
+>>>>>>> master
                 {            
                     jObject[key + "@odata.bind"] = EntityReferenceTostring((EntityReference)attibute.Value, webApiMetadata);
                 }
