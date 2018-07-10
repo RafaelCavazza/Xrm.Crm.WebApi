@@ -7,8 +7,7 @@ using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Exception;
-using Xrm.Crm.WebApi.Reponse;
-
+using Xrm.Crm.WebApi.Response;
 namespace Xrm.Crm.WebApi.Metadata
 {
     public class WebApiMetadata

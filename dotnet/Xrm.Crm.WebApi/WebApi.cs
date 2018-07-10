@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Enums;
-using Xrm.Crm.WebApi.Reponse;
+using Xrm.Crm.WebApi.Response;
 using Xrm.Crm.WebApi.Request;
 using Xrm.Crm.WebApi.Metadata;
 
@@ -65,7 +65,7 @@ namespace Xrm.Crm.WebApi {
 
             var data = await response.Content.ReadAsStringAsync ();
             var result = JObject.Parse (data);
-            var entity = ResponseAttributeFormatter.FormatEntityResponde (result);
+            var entity = ResponseAttributeFormatter.FormatEntityResponse (result);
             entity.LogicalName = entityName;
             entity.Id = entityId;
             return entity;
@@ -193,17 +193,29 @@ namespace Xrm.Crm.WebApi {
             QualifyLeadAsync(action).GetAwaiter().GetResult();
         }
 
-        public async Task QualifyLeadAsync (QualifyLeadAction action) {
+        public async Task<List<Entity>> QualifyLeadAsync (QualifyLeadAction action) {
+
             var fullUrl = $"{ApiUrl}/leads({action.LeadId.ToString("P")})/Microsoft.Dynamics.CRM.QualifyLead";
-            var jObject = new JObject ();
-            jObject["CreateAccount"] = action.CreateAccount;
-            jObject["CreateContact"] = action.CreateContact;
-            jObject["CreateOpportunity"] = action.CreateOpportunity;
-            jObject["Status"] = action.Status;
-            //Bind Other values
-            var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl);
+            var jObject = action.GetRequestObject(); 
+
+            var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
+                Content = new StringContent (JsonConvert.SerializeObject (jObject), Encoding.UTF8, "application/json")
+            };
+
             var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
             ResponseValidator.EnsureSuccessStatusCode (response);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<JObject>(responseContent);
+            var entities = QualifyLeadResponseFormatter.GetCreatedEntities(data);
+
+            foreach(var entity in entities){
+                var entityDefinition = WebApiMetadata.GetEntityDefinitions(entity.LogicalName);
+                var primaryKey = entityDefinition?.PrimaryIdAttribute;
+                if (entity.Contains (primaryKey))
+                    entity.Id = Guid.Parse (entity.GetAttributeValue<string> (primaryKey));
+            }
+
+            return entities;
         }
     }
 }

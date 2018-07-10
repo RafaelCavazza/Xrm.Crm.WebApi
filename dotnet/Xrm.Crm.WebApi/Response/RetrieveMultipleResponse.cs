@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xrm.Crm.WebApi;
 
-namespace Xrm.Crm.WebApi.Reponse
+namespace Xrm.Crm.WebApi.Response
 {
     public class RetrieveMultipleResponse
     {
@@ -23,7 +23,7 @@ namespace Xrm.Crm.WebApi.Reponse
         {
             foreach (JObject value in result["value"]?.ToList())
             {
-                var entity = ResponseAttributeFormatter.FormatEntityResponde(value);
+                var entity = ResponseAttributeFormatter.FormatEntityResponse(value);
                 Entities.Add(entity);
             }
 

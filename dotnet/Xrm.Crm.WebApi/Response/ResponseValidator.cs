@@ -5,56 +5,43 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi.Exception;
 
-namespace Xrm.Crm.WebApi.Reponse
+namespace Xrm.Crm.WebApi.Response
 {
     internal class ResponseValidator
     {
-        
         internal static void EnsureSuccessStatusCode(HttpResponseMessage response,string jsonData = null)
         {
             if (response.IsSuccessStatusCode)
                 return;
 
             var message = String.Empty;            
-
-            string errorData = response.Content.ReadAsStringAsync().Result;
+            var errorData = response.Content.ReadAsStringAsync().Result;
 
             if (response.Content.Headers.ContentType.MediaType.Equals("text/plain"))
-            {
                 message = errorData;
-            }
             else if (response.Content.Headers.ContentType.MediaType.Equals("application/json"))
-            {
-                var jcontent = (JObject)JsonConvert.DeserializeObject(errorData);
-                IDictionary<string, JToken> d = jcontent;
-                
-                if (d.ContainsKey("error"))
-                {
-                    JObject error = (JObject)jcontent.Property("error").Value;
-                    message = (String)error.Property("message").Value;
-                }
-                else if (d.ContainsKey("Message"))
-                    message = (String)jcontent.Property("Message").Value;
-
-
-            }
+                message = GetErroMesssage(errorData);
             else if (response.Content.Headers.ContentType.MediaType.Equals("text/html"))
-            {
-                message = "HTML Error Content:";
-                message += "\n\n" + errorData;
-            }
+                message = $"HTML Error Content: {Environment.NewLine}{Environment.NewLine} {errorData}";
             else
+                message = $"Error occurred and no handler is available for content in the {response.Content.Headers.ContentType.MediaType} format.";
+
+            throw new WebApiException(message) { JSON = jsonData };
+        }
+
+        private static string GetErroMesssage(string errorData){
+            var jcontent = (JObject)JsonConvert.DeserializeObject(errorData);
+            IDictionary<string, JToken> d = jcontent;
+                
+            if (d.ContainsKey("error"))
             {
-                message = String.Format("Error occurred and no handler is available for content in the {0} format.",
-                    response.Content.Headers.ContentType.MediaType.ToString());
+                JObject error = (JObject)jcontent.Property("error").Value;
+                return (String)error.Property("message").Value;
             }
+            else if (d.ContainsKey("Message"))
+                return (String)jcontent.Property("Message").Value;
 
-            var exception = new WebApiException(message);
-
-            if (jsonData != null)
-                exception.JSON = jsonData;
-            
-            throw exception;
+            return errorData;
         }
     }
 }

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Xrm.Crm.WebApi.BatchOperations;
 using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Enums;
-using Xrm.Crm.WebApi.Reponse;
+using Xrm.Crm.WebApi.Response;
 using Xrm.Crm.WebApi.Request;
 using System.Linq;
 

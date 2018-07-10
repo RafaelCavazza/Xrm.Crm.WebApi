@@ -15,4 +15,11 @@
     <ProjectReference Include="..\Xrm.Crm.WebApi\Xrm.Crm.WebApi.csproj" />
   </ItemGroup>
 
+  <!-- Test Files -->
+  <ItemGroup>
+    <None Update="TestFiles/*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

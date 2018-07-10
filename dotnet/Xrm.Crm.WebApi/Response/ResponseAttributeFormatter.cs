@@ -5,11 +5,11 @@ using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
 using System;
 
-namespace Xrm.Crm.WebApi.Reponse
+namespace Xrm.Crm.WebApi.Response
 {
     internal static class ResponseAttributeFormatter
     {
-        public static Entity FormatEntityResponde(JObject jObject)
+        public static Entity FormatEntityResponse(JObject jObject)
         {
             var etag = jObject["@odata.etag"]?.ToString();
             var formatedValues = new Dictionary<string, string>();
