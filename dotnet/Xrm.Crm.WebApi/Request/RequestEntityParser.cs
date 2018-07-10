@@ -17,22 +17,18 @@ namespace Xrm.Crm.WebApi.Request
 
             foreach(var attibute in entity.Attributes)
             {
-<<<<<<< HEAD
                 var key = attibute.Key;
 
                 if(webApiMetadata.LoadAttributes){
                     var atributo = entityDefinitions.Attributes.FirstOrDefault(a => a.SchemaName.ToLower().Equals(attibute.Key.ToLower()));
                     key = atributo.SchemaName ?? key;
                 }
-
-                if(attibute.Value is EntityReference) 
-=======
+                
                 if(attibute.Value == null)
                 {
                     jObject[attibute.Key] = null;
                 }
                 else if(attibute.Value is EntityReference) 
->>>>>>> master
                 {            
                     jObject[key + "@odata.bind"] = EntityReferenceTostring((EntityReference)attibute.Value, webApiMetadata);
                 }
