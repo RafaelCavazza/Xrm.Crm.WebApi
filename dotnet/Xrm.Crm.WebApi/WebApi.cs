@@ -216,5 +216,29 @@ namespace Xrm.Crm.WebApi {
 
             return entities;
         }
+
+        public string SendEmail (Guid activityId, bool issueSend, string trackingToken) { 
+            return SendEmailAsync(activityId, issueSend, trackingToken).GetAwaiter().GetResult();
+        }   
+
+        public async Task<string> SendEmailAsync (Guid activityId, bool issueSend, string trackingToken) { 
+            var jObject = new JObject();
+            jObject["IssueSend"] = issueSend;
+            if(!string.IsNullOrWhiteSpace(trackingToken) )
+                jObject["TrackingToken"] = trackingToken;
+
+            var fullUrl = $"{ApiUrl}/emails({activityId.ToString("P")})/Microsoft.Dynamics.CRM.SendEmail";
+
+
+            var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
+                Content = new StringContent (JsonConvert.SerializeObject (jObject), Encoding.UTF8, "application/json")
+            };
+
+            var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
+            ResponseValidator.EnsureSuccessStatusCode (response);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var data = JObject.Parse(responseContent);
+            return data["Subject"].ToString();
+        }
     }
 }
