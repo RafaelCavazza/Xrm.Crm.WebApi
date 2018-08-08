@@ -51,13 +51,17 @@ namespace Xrm.Crm.WebApi {
             return new Guid( headerValue.Split('(').Last().Split(')')[0] );
         }
 
-        public Entity Retrieve (string entityName, Guid entityId) {
-            return RetrieveAsync (entityName, entityId).GetAwaiter ().GetResult ();
+        public Entity Retrieve (string entityName, Guid entityId, params string[] properties) {
+            return RetrieveAsync (entityName, entityId, properties).GetAwaiter ().GetResult ();
         }
 
-        public async Task<Entity> RetrieveAsync (string entityName, Guid entityId) {
+        public async Task<Entity> RetrieveAsync (string entityName, Guid entityId, params string[] properties) {
             var entityCollection = WebApiMetadata.GetEntitySetName (entityName);
             var fullUrl = ApiUrl + entityCollection + entityId.ToString ("P");
+
+            if(properties?.Any() ?? false)
+                fullUrl += "?$select=" + string.Join(",", properties);
+
             var request = new HttpRequestMessage (new HttpMethod ("GET"), fullUrl);
             var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
             ResponseValidator.EnsureSuccessStatusCode (response);
@@ -151,7 +155,7 @@ namespace Xrm.Crm.WebApi {
         }
 
         public async Task DeleteAsync (Entity entity) {
-            var fullUrl = ApiUrl + WebApiMetadata.GetEntitySetName (entity.LogicalName);
+            var fullUrl = ApiUrl + RequestEntityParser.GetEntityApiUrl (entity, WebApiMetadata);
             var request = new HttpRequestMessage (new HttpMethod ("Delete"), fullUrl) {
                 Content = new StringContent ("{}", Encoding.UTF8, "application/json")
             };
@@ -228,8 +232,7 @@ namespace Xrm.Crm.WebApi {
                 jObject["TrackingToken"] = trackingToken;
 
             var fullUrl = $"{ApiUrl}/emails({activityId.ToString("P")})/Microsoft.Dynamics.CRM.SendEmail";
-
-
+            
             var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
                 Content = new StringContent (JsonConvert.SerializeObject (jObject), Encoding.UTF8, "application/json")
             };
