@@ -15,40 +15,9 @@ namespace Xrm.Crm.WebApi.Request
 
             foreach(var attibute in entity.Attributes)
             {
-                if(attibute.Value == null)
-                {
-                    jObject[attibute.Key] = null;
-                }
-                else if(attibute.Value is EntityReference) 
-                {            
-                    jObject[attibute.Key + "@odata.bind"] = EntityReferenceTostring((EntityReference)attibute.Value, webApiMetadata);
-                }
-                else if (IsActivityPartyEnumerable(attibute.Value))
-                {
-                    var activityParties = GetActivityPartyCollections(attibute.Value);
-                    var jArray = new JArray();
-                    foreach(var activityParty in activityParties)
-                    {
-                        jArray.Add(ActivityPartyToJObject(activityParty, webApiMetadata));
-                    }
-
-                    jObject[attibute.Key] = jArray;
-                }
-                else if(attibute.Value is List<Entity>)
-                {
-                    var objects = new JArray();
-                    foreach(var nestedEntity in (List<Entity>)attibute.Value)
-                    {
-                        objects.Add(EntityToJObject(nestedEntity, webApiMetadata));
-                    }
-                    jObject[attibute.Key] = objects;
-                }
-                else
-                {
-                    jObject[attibute.Key] = JValue.FromObject(attibute.Value);
-                }
+                var jToken = GetJTokenFromAttribute(attibute.Key, attibute.Value, webApiMetadata);
+                jObject.Add(jToken);
             }
-
             return jObject;
         }
         
@@ -105,6 +74,41 @@ namespace Xrm.Crm.WebApi.Request
                 return entitySetName + entity.Id.ToString("P");
             
             return entitySetName;
+        }
+
+        public static JProperty GetJTokenFromAttribute(string key, object value, WebApiMetadata webApiMetadata){
+
+            if(value == null)
+            {
+                return new JProperty(key, null);
+            }
+            else if(value is EntityReference) 
+            {
+                return new JProperty(key + "@odata.bind", EntityReferenceTostring((EntityReference)value, webApiMetadata));
+            }
+            else if (IsActivityPartyEnumerable(value))
+            {
+                var activityParties = GetActivityPartyCollections(value);
+                var jArray = new JArray();
+                foreach(var activityParty in activityParties)
+                {
+                    jArray.Add(ActivityPartyToJObject(activityParty, webApiMetadata));
+                }
+                return new JProperty(key, jArray);
+            }
+            else if(value is List<Entity>)
+            {
+                var objects = new JArray();
+                foreach(var nestedEntity in (List<Entity>) value)
+                {
+                    objects.Add(EntityToJObject(nestedEntity, webApiMetadata));
+                }
+                return new JProperty(key, objects);
+            }
+            else
+            {
+                return new JProperty(key, JValue.FromObject(value));
+            }
         }
     }
 }

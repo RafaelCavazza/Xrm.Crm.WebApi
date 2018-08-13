@@ -243,5 +243,20 @@ namespace Xrm.Crm.WebApi {
             var data = JObject.Parse(responseContent);
             return data["Subject"].ToString();
         }
+
+        public void Merge(MergeAction mergeAction){
+            MergeAsync(mergeAction).GetAwaiter().GetResult();
+        }
+            
+        public async Task MergeAsync(MergeAction mergeAction){
+
+            var fullUrl = $"{ApiUrl}/Merge";
+            var requestObject = mergeAction.GetRequestObject(WebApiMetadata);
+            var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
+                Content = new StringContent (JsonConvert.SerializeObject (requestObject), Encoding.UTF8, "application/json")
+            };
+            var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
+            ResponseValidator.EnsureSuccessStatusCode (response);
+        }
     }
 }
