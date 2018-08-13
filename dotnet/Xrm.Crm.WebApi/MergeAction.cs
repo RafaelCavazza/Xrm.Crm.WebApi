@@ -47,7 +47,7 @@ namespace Xrm.Crm.WebApi.Request
 
             var jObject = new JObject();
             jObject["@odata.type"] = $"Microsoft.Dynamics.CRM.{EntityDefinitions.LogicalName}";
-            jObject[EntityDefinitions.LogicalName] = Target.Id.ToString("D");
+            jObject[EntityDefinitions.PrimaryIdAttribute] = Target.Id.ToString("D");
 
             if(UpdateContent == null)
                 return new JProperty("UpdateContent", jObject);
