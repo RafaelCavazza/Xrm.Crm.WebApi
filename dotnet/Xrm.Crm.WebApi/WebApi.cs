@@ -270,7 +270,8 @@ namespace Xrm.Crm.WebApi {
             var target = new JObject();
             target[entityDefinitions.PrimaryIdAttribute] = entity.Id.ToString("D");
             target["@odata.type"] = $"Microsoft.Dynamics.CRM.{entityDefinitions.LogicalName}";
-            var requestObject = new JObject(target);
+            var requestObject = new JObject();
+            requestObject.Add("Target",target);
 
             var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
                 Content = new StringContent (JsonConvert.SerializeObject (requestObject), Encoding.UTF8, "application/json")
