@@ -53,14 +53,16 @@ namespace Xrm.Crm.WebApi
             }
 
             //TODO: Advanced options?
-            if (SavedQuery != Guid.Empty)
+            if (SavedQuery != Guid.Empty){
                 query["savedQuery"] = SavedQuery.ToString();
-
-            if (UserQuery != Guid.Empty)
+            }
+            else if (UserQuery != Guid.Empty){
                 query["userQuery"] = UserQuery.ToString();
-
-            if (!string.IsNullOrWhiteSpace(FetchXml))
+            }
+            else if (!string.IsNullOrWhiteSpace(FetchXml)){
                 query["fetchXml"] = FetchXml;
+            }
+            
             //END: Advanced options?
 
             uriBuilder.Query = query.ToString();

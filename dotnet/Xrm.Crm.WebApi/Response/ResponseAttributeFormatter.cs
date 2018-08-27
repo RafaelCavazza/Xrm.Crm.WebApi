@@ -82,17 +82,13 @@ namespace Xrm.Crm.WebApi.Response
         {
             var newName = name.Replace("@OData.Community.Display.V1.FormattedValue", "");
             newName = FormatAttributeName(newName);
-
             if (!formatedValues.ContainsKey(newName) && !string.IsNullOrWhiteSpace(newName))
                 formatedValues.Add(newName, value);
         }
 
         private static bool IsFormatedValue(string name)
         {   
-            if(string.IsNullOrWhiteSpace(name))
-                return false;
-
-            return name.Contains("@OData.Community.Display.V1.FormattedValue");
+            return (name ?? "").Contains("@OData.Community.Display.V1.FormattedValue");
         }
     }
 }

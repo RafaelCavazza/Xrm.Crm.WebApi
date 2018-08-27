@@ -36,7 +36,6 @@ namespace Xrm.Crm.WebApi.Test
             lead["firstname"] = "Test";
             lead["lastname"] = "Test";
             var LeadId = WebApi.Create(lead);
-
             Assert.NotEqual(LeadId, Guid.Empty);
         }
     }
