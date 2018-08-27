@@ -259,11 +259,11 @@ namespace Xrm.Crm.WebApi {
             ResponseValidator.EnsureSuccessStatusCode (response);
         }
 
-        public void AddToQueue(Guid queueId, EntityReference entity){
-            AddToQueueAsync(queueId, entity).GetAwaiter().GetResult();
+        public Guid AddToQueue(Guid queueId, EntityReference entity){
+            return AddToQueueAsync(queueId, entity).GetAwaiter().GetResult();
         }
             
-        public async Task AddToQueueAsync(Guid queueId, EntityReference entity){
+        public async Task<Guid> AddToQueueAsync(Guid queueId, EntityReference entity){
 
             var fullUrl = $"queues({queueId.ToString("P")})/Microsoft.Dynamics.CRM.AddToQueue";
             var entityDefinitions = WebApiMetadata.GetEntityDefinitions(entity.LogicalName);
@@ -277,6 +277,8 @@ namespace Xrm.Crm.WebApi {
             };
             var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
             ResponseValidator.EnsureSuccessStatusCode (response);
+            var data = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
+            return data["QueueItemId"].ToObject<Guid>();
         }
     }
 }
