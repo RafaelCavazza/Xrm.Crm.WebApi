@@ -265,10 +265,10 @@ namespace Xrm.Crm.WebApi {
         
         public async Task<Guid> AddToQueueAsync(Guid queueId, EntityReference entity){
 
-            var fullUrl = $"{ApiUrl}/queues({queueId.ToString("P")})/Microsoft.Dynamics.CRM.AddToQueue";
+            var fullUrl = $"{ApiUrl}/queues{queueId.ToString("P")}/Microsoft.Dynamics.CRM.AddToQueue";
             var entityDefinitions = WebApiMetadata.GetEntityDefinitions(entity.LogicalName);
             var target = new JObject();
-            target[entityDefinitions.PrimaryIdAttribute] = entity.Id.ToString("P");
+            target[entityDefinitions.PrimaryIdAttribute] = entity.Id.ToString("D");
             target["@odata.type"] = $"Microsoft.Dynamics.CRM.{entityDefinitions.LogicalName}";
             var requestObject = new JObject(target);
 
