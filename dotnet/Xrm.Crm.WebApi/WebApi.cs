@@ -262,10 +262,10 @@ namespace Xrm.Crm.WebApi {
         public Guid AddToQueue(Guid queueId, EntityReference entity){
             return AddToQueueAsync(queueId, entity).GetAwaiter().GetResult();
         }
-            
+        
         public async Task<Guid> AddToQueueAsync(Guid queueId, EntityReference entity){
 
-            var fullUrl = $"queues({queueId.ToString("P")})/Microsoft.Dynamics.CRM.AddToQueue";
+            var fullUrl = $"{ApiUrl}/queues({queueId.ToString("P")})/Microsoft.Dynamics.CRM.AddToQueue";
             var entityDefinitions = WebApiMetadata.GetEntityDefinitions(entity.LogicalName);
             var target = new JObject();
             target[entityDefinitions.PrimaryIdAttribute] = entity.Id.ToString("P");
