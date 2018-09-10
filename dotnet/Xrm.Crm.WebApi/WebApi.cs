@@ -281,5 +281,16 @@ namespace Xrm.Crm.WebApi {
             var data = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return data["QueueItemId"].ToObject<Guid>();
         }
+
+        public void Disassociate (Entity entity, string navigationProperty){
+            DisassociateAsync(entity, navigationProperty).GetAwaiter().GetResult();
+        }
+        
+        public async Task DisassociateAsync(Entity entity, string navigationProperty){
+            var fullUrl = ApiUrl + RequestEntityParser.GetEntityApiUrl (entity, WebApiMetadata) + "/" + navigationProperty + "/$ref";
+            var request = new HttpRequestMessage (new HttpMethod ("DELETE"), fullUrl);
+            var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
+            ResponseValidator.EnsureSuccessStatusCode (response);
+        }
     }
 }
