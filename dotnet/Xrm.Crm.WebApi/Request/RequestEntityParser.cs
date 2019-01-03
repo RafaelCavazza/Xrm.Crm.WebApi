@@ -43,9 +43,9 @@ namespace Xrm.Crm.WebApi.Request
                 jObject[$"partyid_{activityParty.TargetEntity.LogicalName}@odata.bind"] = EntityReferenceTostring(activityParty.TargetEntity, webApiMetadata); 
 
             foreach(var attribute in activityParty.Attributes){
-                jObject.Add(attribute.Key, (JToken) attribute.Value);
+                jObject.Add(attribute.Key, JValue.FromObject(attribute.Value));
             }
-            
+
             return jObject;
         }
 
