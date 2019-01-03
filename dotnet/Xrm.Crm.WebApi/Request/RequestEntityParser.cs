@@ -38,7 +38,14 @@ namespace Xrm.Crm.WebApi.Request
         {
             var jObject = new JObject();
             jObject["participationtypemask"] = (int) activityParty.ParticipationTypeMask;
-            jObject[$"partyid_{activityParty.TargetEntity.LogicalName}@odata.bind"] = EntityReferenceTostring(activityParty.TargetEntity, webApiMetadata); 
+            
+            if(activityParty.TargetEntity != null)
+                jObject[$"partyid_{activityParty.TargetEntity.LogicalName}@odata.bind"] = EntityReferenceTostring(activityParty.TargetEntity, webApiMetadata); 
+
+            foreach(var attribute in activityParty.Attributes){
+                jObject.Add(attribute.Key, (JToken) attribute.Value);
+            }
+            
             return jObject;
         }
 

@@ -8,7 +8,7 @@ namespace Xrm.Crm.WebApi
     public class Entity
     {
         public Dictionary<string, object> Attributes { get; set; }            
-        public Dictionary<string, string> FormatedValues { get; set; }
+        public Dictionary<string, string> FormattedValues { get; set; }
         public Dictionary<string, object> KeyAttributes { get; set; }
         public string Etag { get; internal set; }
         public string LogicalName { get; set; }
@@ -19,8 +19,8 @@ namespace Xrm.Crm.WebApi
             if(Attributes == null)
                 Attributes = new Dictionary<string, object>();
 
-            if(FormatedValues == null)
-                FormatedValues = new Dictionary<string, string>();
+            if(FormattedValues == null)
+                FormattedValues = new Dictionary<string, string>();
 
             if(KeyAttributes == null)
                 KeyAttributes = new Dictionary<string, object>();

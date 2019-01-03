@@ -61,7 +61,7 @@ namespace Xrm.Crm.WebApi.Response
             
             var entity = new Entity();
             entity.Attributes = attributes; 
-            entity.FormatedValues = formatedValues;
+            entity.FormattedValues = formatedValues;
             return entity;
         }
 
