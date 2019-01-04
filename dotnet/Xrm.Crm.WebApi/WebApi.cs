@@ -12,9 +12,11 @@ using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Enums;
 using Xrm.Crm.WebApi.Response;
 using Xrm.Crm.WebApi.Request;
+using Xrm.Crm.WebApi.Interfaces;
 
 namespace Xrm.Crm.WebApi {
-    public partial class WebApi {
+    public partial class WebApi : IWebApi
+    {
         private readonly BaseAuthorization _baseAuthorization;
         public readonly Uri ApiUrl;
         public WebApiMetadata WebApiMetadata { get; internal set; }
