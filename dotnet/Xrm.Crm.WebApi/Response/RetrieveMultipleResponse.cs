@@ -24,7 +24,7 @@ namespace Xrm.Crm.WebApi.Response
             if(result == null)       
                 return;
 
-            foreach (JObject value in result["value"]?.ToList())
+            foreach (JObject value in result?["value"]?.ToList())
             {
                 var entity = ResponseAttributeFormatter.FormatEntityResponse(value);
                 Entities.Add(entity);
