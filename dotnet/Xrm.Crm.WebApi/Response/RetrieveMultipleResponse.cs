@@ -20,16 +20,19 @@ namespace Xrm.Crm.WebApi.Response
         }
 
         public void AddResult(JObject result)
-        {
+        {     
+            if(result == null)       
+                return;
+
             foreach (JObject value in result["value"]?.ToList())
             {
                 var entity = ResponseAttributeFormatter.FormatEntityResponse(value);
                 Entities.Add(entity);
             }
 
-            NextLink = result["@odata.nextLink"]?.ToString();
-            RecordCount = result["@odata.count"]?.ToString();
-            OdataContext = result["@odata.context"]?.ToString();
+            NextLink = result?["@odata.nextLink"]?.ToString();
+            RecordCount = result?["@odata.count"]?.ToString();
+            OdataContext = result?["@odata.context"]?.ToString();
         }
     }
 }
