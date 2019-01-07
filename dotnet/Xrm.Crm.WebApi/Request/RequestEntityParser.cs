@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi.Core;
+using Xrm.Crm.WebApi;
 
 namespace Xrm.Crm.WebApi.Request
 {
-    internal static class RequestEntityParser
+    public static class RequestEntityParser
     {
         public static JObject EntityToJObject(Entity entity, WebApiMetadata webApiMetadata)
         {
@@ -15,39 +15,12 @@ namespace Xrm.Crm.WebApi.Request
 
             foreach(var attibute in entity.Attributes)
             {
-                if(attibute.Value is EntityReference) 
-                {            
-                    jObject[attibute.Key + "@odata.bind"] = EntityReferenceTostring((EntityReference)attibute.Value, webApiMetadata);
-                }
-                else if (IsActivityPartyEnumerable(attibute.Value))
-                {
-                    var activityParties = GetActivityPartyCollections(attibute.Value);
-                    var jArray = new JArray();
-                    foreach(var activityParty in activityParties)
-                    {
-                        jArray.Add(ActivityPartyToJObject(activityParty, webApiMetadata));
-                    }
-
-                    jObject[attibute.Key] = jArray;
-                }
-                else if(attibute.Value is List<Entity>)
-                {
-                    var objects = new JArray();
-                    foreach(var nestedEntity in (List<Entity>)attibute.Value)
-                    {
-                        objects.Add(EntityToJObject(nestedEntity, webApiMetadata));
-                    }
-                    jObject[attibute.Key] = objects;
-                }
-                else
-                {
-                    jObject[attibute.Key] = (dynamic) attibute.Value;
-                }
+                var jToken = GetJTokenFromAttribute(attibute.Key, attibute.Value, webApiMetadata);
+                jObject.Add(jToken);
             }
-
             return jObject;
         }
-
+        
         public static string EntityReferenceTostring(EntityReference entityReference, WebApiMetadata webApiMetadata)
         {
             var logicalName = entityReference.LogicalName.ToLower();
@@ -65,7 +38,14 @@ namespace Xrm.Crm.WebApi.Request
         {
             var jObject = new JObject();
             jObject["participationtypemask"] = (int) activityParty.ParticipationTypeMask;
-            jObject[$"partyid_{activityParty.TargetEntity.LogicalName}@odata.bind"] = EntityReferenceTostring(activityParty.TargetEntity, webApiMetadata); 
+            
+            if(activityParty.TargetEntity != null)
+                jObject[$"partyid_{activityParty.TargetEntity.LogicalName}@odata.bind"] = EntityReferenceTostring(activityParty.TargetEntity, webApiMetadata); 
+
+            foreach(var attribute in activityParty.Attributes){
+                jObject.Add(attribute.Key, JValue.FromObject(attribute.Value));
+            }
+
             return jObject;
         }
 
@@ -101,6 +81,41 @@ namespace Xrm.Crm.WebApi.Request
                 return entitySetName + entity.Id.ToString("P");
             
             return entitySetName;
+        }
+
+        public static JProperty GetJTokenFromAttribute(string key, object value, WebApiMetadata webApiMetadata){
+
+            if(value == null)
+            {
+                return new JProperty(key, null);
+            }
+            else if(value is EntityReference) 
+            {
+                return new JProperty(key + "@odata.bind", EntityReferenceTostring((EntityReference)value, webApiMetadata));
+            }
+            else if (IsActivityPartyEnumerable(value))
+            {
+                var activityParties = GetActivityPartyCollections(value);
+                var jArray = new JArray();
+                foreach(var activityParty in activityParties)
+                {
+                    jArray.Add(ActivityPartyToJObject(activityParty, webApiMetadata));
+                }
+                return new JProperty(key, jArray);
+            }
+            else if(value is List<Entity>)
+            {
+                var objects = new JArray();
+                foreach(var nestedEntity in (List<Entity>) value)
+                {
+                    objects.Add(EntityToJObject(nestedEntity, webApiMetadata));
+                }
+                return new JProperty(key, objects);
+            }
+            else
+            {
+                return new JProperty(key, JValue.FromObject(value));
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using Xrm.Crm.WebApi.Core;
+using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Request;
 using Newtonsoft.Json;
 

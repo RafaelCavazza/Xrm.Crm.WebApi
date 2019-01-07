@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Xrm.Crm.WebApi.Core;
+using Xrm.Crm.WebApi;
 using System;
 using System.Linq;
 using Xrm.Crm.WebApi.Exception;
 
-namespace Xrm.Crm.WebApi.Reponse
+namespace Xrm.Crm.WebApi.Response
 {
     public class BatchRequestResponse
     {
@@ -45,8 +45,24 @@ namespace Xrm.Crm.WebApi.Reponse
             var location = httpLine = lines.First(l => l.Contains("Location:"));
             var entity = location.Split('/').Last();
             var entityName = entity.Split('(')[0];
-            var entityId = entity.Replace(entityName,"").Replace("(","").Replace(")","");
-            return new Entity(entityName, new Guid(entityId));
+
+            var entityKey = entity.Split('(').Last().Split(')').First();
+
+            if(Guid.TryParse(entityKey, out Guid entityId))
+                return new Entity(entityName, entityId);
+            
+            var responseEntity = new Entity(entityName);
+            var keys = entityKey.Split(',');
+            foreach(var key in keys){
+                var values = key.Split('=');
+                if(values.Length != 2)
+                    continue;
+
+                var name = values[0];
+                var value = values[1].Substring(1, values[1].Length -2).Replace("''", "'");
+                responseEntity.KeyAttributes.Add(values[0], value);
+            }
+            return responseEntity;
         }
 
         private string RemoveHeaders(string response)

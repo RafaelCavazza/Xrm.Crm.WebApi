@@ -12,8 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xrm.Crm.WebApi.ADAL\Xrm.Crm.WebApi.ADAL.csproj" />
     <ProjectReference Include="..\Xrm.Crm.WebApi\Xrm.Crm.WebApi.csproj" />
+  </ItemGroup>
+
+  <!-- Test Files -->
+  <ItemGroup>
+    <None Update="TestFiles/*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

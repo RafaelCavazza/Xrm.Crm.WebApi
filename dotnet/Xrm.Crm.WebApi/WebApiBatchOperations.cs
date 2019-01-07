@@ -1,14 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Xrm.Crm.WebApi.BatchOperations;
-using Xrm.Crm.WebApi.Enums;
-using Xrm.Crm.WebApi.Reponse;
-using Xrm.Crm.WebApi.Request;
-using System.Linq;
 
 namespace Xrm.Crm.WebApi
 {

@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi.Authorization;
-using Xrm.Crm.WebApi.Reponse;
 
 namespace Xrm.Crm.WebApi
 {
@@ -70,7 +66,7 @@ namespace Xrm.Crm.WebApi
             return this[name]?.LogicalName;
         }
 
-        private EntityDefinitions GetEntityDefinitions(string anyName)
+        public EntityDefinitions GetEntityDefinitions(string anyName)
         {
             return EntitiesDefinitions.FirstOrDefault(e => 
                     (e.LogicalName?.ToLower()??"").Equals(anyName.ToLower()) ||

@@ -21,7 +21,7 @@ namespace Xrm.Crm.WebApi
 
         public override string ToString()
         {
-            return document.ToString();
+            return document.ToString(SaveOptions.DisableFormatting);
         }
 
         public static implicit operator FetchXmlExpression(string fetchXml)

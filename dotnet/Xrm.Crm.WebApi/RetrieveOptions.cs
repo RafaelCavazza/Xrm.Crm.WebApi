@@ -5,7 +5,7 @@ using Xrm.Crm.WebApi.Exception;
 
 namespace Xrm.Crm.WebApi
 {
-    public class RetriveOptions
+    public class RetrieveOptions
     {
         public string[] Select { get; set; }
         public string[] OrderBy { get; set; }
@@ -20,7 +20,7 @@ namespace Xrm.Crm.WebApi
         public Guid SavedQuery { get; set; }
         public Guid UserQuery { get; set; }
 
-        public string GetRetriveUrl(Uri apiUri)
+        public string GetRetrieveUrl(Uri apiUri)
         {
             if (apiUri == null)
                 throw new WebApiException("ApiUri can't be null");
@@ -53,14 +53,16 @@ namespace Xrm.Crm.WebApi
             }
 
             //TODO: Advanced options?
-            if (SavedQuery != Guid.Empty)
+            if (SavedQuery != Guid.Empty){
                 query["savedQuery"] = SavedQuery.ToString();
-
-            if (UserQuery != Guid.Empty)
+            }
+            else if (UserQuery != Guid.Empty){
                 query["userQuery"] = UserQuery.ToString();
-
-            if (!string.IsNullOrWhiteSpace(FetchXml))
+            }
+            else if (!string.IsNullOrWhiteSpace(FetchXml)){
                 query["fetchXml"] = FetchXml;
+            }
+            
             //END: Advanced options?
 
             uriBuilder.Query = query.ToString();
