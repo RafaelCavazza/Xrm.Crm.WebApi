@@ -23,7 +23,17 @@ namespace Xrm.Crm.WebApi.Authorization
         public HttpClient GetHttpCliente()
         {
             RefreshCredentials();
+            RefreshCallerId();
             return httpClient;
+        }
+
+        private void RefreshCallerId()
+        {
+            if(httpClient?.DefaultRequestHeaders?.Contains("MSCRMCallerID") ?? false)
+                    httpClient.DefaultRequestHeaders.Remove("MSCRMCallerID");
+
+            if(CallerId != Guid.Empty)
+                httpClient?.DefaultRequestHeaders?.Add("MSCRMCallerID", CallerId.ToString());            
         }
 
         public void ConfigHttpClient()
@@ -33,9 +43,6 @@ namespace Xrm.Crm.WebApi.Authorization
 
             if(!httpClient.DefaultRequestHeaders.Contains("OData-MaxVersion"))
                 httpClient.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
-
-            if(!httpClient.DefaultRequestHeaders.Contains("OData-Version"))
-                httpClient.DefaultRequestHeaders.Add("OData-Version", "4.0");
 
             if(!httpClient.DefaultRequestHeaders.Contains("OData-Version"))
                 httpClient.DefaultRequestHeaders.Add("OData-Version", "4.0");

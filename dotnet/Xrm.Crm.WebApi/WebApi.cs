@@ -21,6 +21,8 @@ namespace Xrm.Crm.WebApi {
         public readonly Uri ApiUrl;
         public WebApiMetadata WebApiMetadata { get; internal set; }
 
+        public BaseAuthorization BaseAuthorization => _baseAuthorization;
+
         public WebApi (BaseAuthorization baseAuthorization) : this (baseAuthorization, baseAuthorization.GetCrmBaseUrl () + "/api/data/v8.2/") { }
 
         public WebApi (BaseAuthorization baseAuthorization, string apiUrl) {
