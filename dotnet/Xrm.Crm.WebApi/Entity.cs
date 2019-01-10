@@ -76,7 +76,7 @@ namespace Xrm.Crm.WebApi
                 return (T) (object) Convert.ToDateTime(Attributes[atributeName]);
 
             if(typeof(Guid) == typeof(T) && Attributes[atributeName] is string)                
-                return (T) (object) new Guid(Attributes[atributeName].ToString());
+                return (T) (object) new Guid( (string) Attributes[atributeName]);
 
             return (T)Attributes[atributeName];
         }
