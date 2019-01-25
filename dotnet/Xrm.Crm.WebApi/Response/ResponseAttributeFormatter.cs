@@ -47,11 +47,12 @@ namespace Xrm.Crm.WebApi.Response
                             entities.Add(FormatEntityResponse( (JObject) nestedEntity));
                         }
                         catch{
-
+                            continue;
                         }
                     }
-                    
-                    continue;                
+
+                    attributes[attribute.Key] = entities;
+                    continue;
                 }
 
                 if (IsFormatedValue(attribute.Key))
