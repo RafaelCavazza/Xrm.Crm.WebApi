@@ -16,22 +16,21 @@ namespace Xrm.Crm.WebApi.Response
             var attributes = jObject.ToObject<Dictionary<string, object>>();
             var newAttributes = new Dictionary<string, object>(); 
 
-
             var enttyReferenceAttributes = attributes
-                .Where(a => a.Key.StartsWith("_") && a.Key.EndsWith("_value"))
+                .Where(a =>  a.Key.EndsWith("@Microsoft.Dynamics.CRM.lookuplogicalname") )
                 .ToList();
 
-            foreach(var enttyReferenceAttribute in enttyReferenceAttributes)
+            foreach(var entyReferenceAttribute in enttyReferenceAttributes)
             {
-                var complements = attributes.Where(a => a.Key.Contains(enttyReferenceAttribute.Key)).ToList();
-                if(!complements.Any(k => k.Key.Contains("lookuplogicalname")))
-                    continue;
-                
+                var key = entyReferenceAttribute.Key.Split('@')[0];  
+                var complements = attributes.Where(a => a.Key.Contains(key)).ToList();
                 var logicalname = complements.First(a => a.Key.Contains("lookuplogicalname")).Value.ToString();
-                var entityReference = new EntityReference(logicalname,enttyReferenceAttribute.Value.ToString());
+                var id = complements.First(a => a.Key == key).Value;
+
+                var entityReference = new EntityReference(logicalname, id.ToString());
                 entityReference.Name = complements.FirstOrDefault(c=> c.Key.Contains("FormattedValue")).Value?.ToString();
 
-                var attributeName = FormatAttributeName(enttyReferenceAttribute.Key);
+                var attributeName = FormatAttributeName(key);
                 newAttributes.Add(attributeName, entityReference);
 
                 foreach (var attribute in complements)
@@ -39,21 +38,35 @@ namespace Xrm.Crm.WebApi.Response
                         attributes.Remove(attribute.Key);
             }
 
-            foreach (var atribute in attributes)
+            foreach (var attribute in attributes)
             {
-                if (IsFormatedValue(atribute.Key))
+                if(attribute.Value is JArray){
+                    var entities = new List<Entity>();
+                    foreach(var nestedEntity in (JArray) attribute.Value ){
+                        try{
+                            entities.Add(FormatEntityResponse( (JObject) nestedEntity));
+                        }
+                        catch{
+
+                        }
+                    }
+                    
+                    continue;                
+                }
+
+                if (IsFormatedValue(attribute.Key))
                 {
-                    AddFormatedValue(atribute.Key, atribute.Value?.ToString(), formatedValues);
+                    AddFormatedValue(attribute.Key, attribute.Value?.ToString(), formatedValues);
                     continue;
                 }
 
-                if (!atribute.Key.Contains("_value") && !atribute.Key.Contains("_x002e_") && !atribute.Key.Contains("_x0040_"))
+                if (!attribute.Key.Contains("_value") && !attribute.Key.Contains("_x002e_") && !attribute.Key.Contains("_x0040_"))
                     continue;
     
-                var newName = FormatAttributeName(atribute.Key);
+                var newName = FormatAttributeName(attribute.Key);
 
                 if (!attributes.ContainsKey(newName) && !string.IsNullOrWhiteSpace(newName))
-                    newAttributes.Add(newName, atribute.Value);
+                    newAttributes.Add(newName, attribute.Value);
             }
 
             foreach (var attribute in newAttributes)
