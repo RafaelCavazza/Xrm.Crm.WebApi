@@ -14,43 +14,50 @@ namespace Xrm.Crm.WebApi.Response
             var etag = jObject["@odata.etag"]?.ToString();
             var formatedValues = new Dictionary<string, string>();
             var attributes = jObject.ToObject<Dictionary<string, object>>();
-            var newAttributes = new Dictionary<string, object>(); 
+            var newAttributes = new Dictionary<string, object>();
+            var toRemove = new List<string>();
 
             var enttyReferenceAttributes = attributes
-                .Where(a =>  a.Key.EndsWith("@Microsoft.Dynamics.CRM.lookuplogicalname") )
+                .Where(a => a.Key.EndsWith("@Microsoft.Dynamics.CRM.lookuplogicalname"))
                 .ToList();
 
-            foreach(var entyReferenceAttribute in enttyReferenceAttributes)
+            foreach (var entyReferenceAttribute in enttyReferenceAttributes)
             {
-                var key = entyReferenceAttribute.Key.Split('@')[0];  
+                var key = entyReferenceAttribute.Key.Split('@')[0];
                 var complements = attributes.Where(a => a.Key.Contains(key)).ToList();
-                var logicalname = complements.First(a => a.Key.Contains("lookuplogicalname")).Value.ToString();
+                var logicalname = entyReferenceAttribute.Value.ToString();
                 var id = complements.First(a => a.Key == key).Value;
 
                 var entityReference = new EntityReference(logicalname, id.ToString());
-                entityReference.Name = complements.FirstOrDefault(c=> c.Key.Contains("FormattedValue")).Value?.ToString();
+                entityReference.Name = complements.FirstOrDefault(c => c.Key.Contains("FormattedValue")).Value?.ToString();
 
                 var attributeName = FormatAttributeName(key);
                 newAttributes.Add(attributeName, entityReference);
 
                 foreach (var attribute in complements)
-                    if(!attribute.Key.Contains("FormattedValue"))
-                        attributes.Remove(attribute.Key);
+                    if (!attribute.Key.Contains("FormattedValue") && !toRemove.Contains(attribute.Key))
+                        toRemove.Add(attribute.Key);
             }
+
+            foreach (var att in toRemove)
+                attributes.Remove(att);
 
             foreach (var attribute in attributes)
             {
-                if(attribute.Value is JArray){
+                if (attribute.Value is JArray)
+                {
                     var entities = new List<Entity>();
-                    foreach(var nestedEntity in (JArray) attribute.Value ){
-                        try{
-                            entities.Add(FormatEntityResponse( (JObject) nestedEntity));
+                    foreach (var nestedEntity in (JArray)attribute.Value)
+                    {
+                        try
+                        {
+                            entities.Add(FormatEntityResponse((JObject)nestedEntity));
                         }
-                        catch{
+                        catch
+                        {
                             continue;
                         }
                     }
-
                     attributes[attribute.Key] = entities;
                     continue;
                 }
@@ -63,7 +70,7 @@ namespace Xrm.Crm.WebApi.Response
 
                 if (!attribute.Key.Contains("_value") && !attribute.Key.Contains("_x002e_") && !attribute.Key.Contains("_x0040_"))
                     continue;
-    
+
                 var newName = FormatAttributeName(attribute.Key);
 
                 if (!attributes.ContainsKey(newName) && !string.IsNullOrWhiteSpace(newName))
@@ -71,10 +78,10 @@ namespace Xrm.Crm.WebApi.Response
             }
 
             foreach (var attribute in newAttributes)
-                attributes.Add(attribute.Key,attribute.Value);
-            
+                attributes.Add(attribute.Key, attribute.Value);
+
             var entity = new Entity();
-            entity.Attributes = attributes; 
+            entity.Attributes = attributes;
             entity.FormattedValues = formatedValues;
             return entity;
         }
@@ -101,7 +108,7 @@ namespace Xrm.Crm.WebApi.Response
         }
 
         private static bool IsFormatedValue(string name)
-        {   
+        {
             return (name ?? "").Contains("@OData.Community.Display.V1.FormattedValue");
         }
     }
