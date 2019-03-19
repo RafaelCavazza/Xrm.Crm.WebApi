@@ -37,5 +37,7 @@ namespace Xrm.Crm.WebApi.Interfaces
         Task<Guid> AddToQueueAsync(Guid queueId, EntityReference entity);
         void Disassociate (Entity entity, string navigationProperty);
         Task DisassociateAsync(Entity entity, string navigationProperty);
+        void AddListMembersList (Guid listId, List<Entity> members);
+        Task AddListMembersListAsync(Guid listId, List<Entity> members);
     }
 }
