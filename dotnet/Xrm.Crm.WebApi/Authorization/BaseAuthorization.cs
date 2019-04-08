@@ -13,6 +13,7 @@ namespace Xrm.Crm.WebApi.Authorization
         public BaseAuthorization()
         {
             handler = new HttpClientHandler();
+            handler.UseCookies = false;
             httpClient = new HttpClient(handler);
             Timeout = new TimeSpan(0,2,0);
             CallerId = Guid.Empty;
@@ -52,7 +53,7 @@ namespace Xrm.Crm.WebApi.Authorization
 
             if(!httpClient.DefaultRequestHeaders.Contains("Prefer"))
                 httpClient.DefaultRequestHeaders.Add("Prefer", "odata.include-annotations=\"*\"");
-
+        
             httpClient.Timeout = Timeout;
         }
 
