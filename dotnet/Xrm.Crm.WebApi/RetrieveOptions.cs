@@ -29,7 +29,7 @@ namespace Xrm.Crm.WebApi
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
             if (!string.IsNullOrWhiteSpace(Filter))
-                query["$filter"] = FetchXml;
+                query["$filter"] = Filter;
 
             if (Select?.Length > 0)
                 query["$select"] = String.Join(",", Select);
