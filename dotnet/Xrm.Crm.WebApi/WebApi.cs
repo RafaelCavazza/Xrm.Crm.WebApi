@@ -3,14 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Xrm.Crm.WebApi;
+using Xrm.Crm.WebApi.Authorization;
+using Xrm.Crm.WebApi.Enums;
+using Xrm.Crm.WebApi.Response;
+using Xrm.Crm.WebApi.Request;
+using Xrm.Crm.WebApi.Interfaces;
+using Xrm.Crm.WebApi.Exception;
 
-namespace Xrm.Crm.WebApi
-{
+namespace Xrm.Crm.WebApi {
     public partial class WebApi : IWebApi
     {
         private readonly BaseAuthorization _baseAuthorization;
         public readonly Uri ApiUrl;
         public WebApiMetadata WebApiMetadata { get; internal set; }
+
+        public BaseAuthorization BaseAuthorization => _baseAuthorization;
 
         public WebApi (BaseAuthorization baseAuthorization) : this (baseAuthorization, baseAuthorization.GetCrmBaseUrl () + "/api/data/v8.2/") { }
 
@@ -282,6 +292,45 @@ namespace Xrm.Crm.WebApi
         public async Task DisassociateAsync(Entity entity, string navigationProperty){
             var fullUrl = ApiUrl + RequestEntityParser.GetEntityApiUrl (entity, WebApiMetadata) + "/" + navigationProperty + "/$ref";
             var request = new HttpRequestMessage (new HttpMethod ("DELETE"), fullUrl);
+            var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
+            ResponseValidator.EnsureSuccessStatusCode (response);
+        }
+
+        public void AddListMembersList (Guid listId, List<Entity> members){
+            AddListMembersListAsync(listId, members).GetAwaiter().GetResult();
+        }
+        
+        public async Task AddListMembersListAsync (Guid listId, List<Entity> members){
+            var jObject = new JObject();
+            var list = new JObject();
+            var litsMembers = new JArray();
+            list["listid"] = listId.ToString("D");
+            list["@odata.type"] = "Microsoft.Dynamics.CRM.list";
+
+            foreach(var member in members){
+                var jMember = new JObject();
+                
+                if(member.LogicalName.ToLower() == "contact"){
+                    jMember["@odata.type"] = "Microsoft.Dynamics.CRM.contact";
+                    jMember["contactid"] = member.Id.ToString("D");
+                }
+                else if(member.LogicalName.ToLower() == "account"){
+                    jMember["@odata.type"] = "Microsoft.Dynamics.CRM.account";                    
+                    jMember["accountid"] = member.Id.ToString("D");
+                }
+                else
+                    throw new WebApiException($"Logical name {member.LogicalName} cannot be mapped to List Members");
+
+                litsMembers.Add(jMember);
+            }
+            
+            jObject["List"] = list;
+            jObject["Members"] = litsMembers;
+
+            var fullUrl = $"{ApiUrl}/AddListMembersList";
+            var request = new HttpRequestMessage (new HttpMethod ("POST"), fullUrl){
+                Content = new StringContent (JsonConvert.SerializeObject (jObject), Encoding.UTF8, "application/json")
+            };
             var response = await _baseAuthorization.GetHttpCliente ().SendAsync (request);
             ResponseValidator.EnsureSuccessStatusCode (response);
         }

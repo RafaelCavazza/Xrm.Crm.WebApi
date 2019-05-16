@@ -72,8 +72,11 @@ namespace Xrm.Crm.WebApi
             if(typeof(T) == typeof(int))
                 return (T) (object)Convert.ToInt32(Attributes[atributeName]);
 
-            if( ( typeof(DateTime) == typeof(T) ||  typeof(DateTime?) == typeof(T) ) && Attributes[atributeName] is string)
+            if(( typeof(DateTime) == typeof(T) ||  typeof(DateTime?) == typeof(T) ) && Attributes[atributeName] is string)
                 return (T) (object) Convert.ToDateTime(Attributes[atributeName]);
+
+            if(typeof(Guid) == typeof(T) && Attributes[atributeName] is string)                
+                return (T) (object) new Guid( (string) Attributes[atributeName]);
 
             return (T)Attributes[atributeName];
         }
@@ -81,6 +84,14 @@ namespace Xrm.Crm.WebApi
         public bool Contains(string atributeName)
         {        
             return !string.IsNullOrWhiteSpace(atributeName) && Attributes.ContainsKey(atributeName);
+        }
+
+        public bool ContainsValue(string atributeName)
+        {        
+            if(!Contains(atributeName))
+                return false;
+            
+            return Attributes[atributeName] != null;
         }
     }
 }

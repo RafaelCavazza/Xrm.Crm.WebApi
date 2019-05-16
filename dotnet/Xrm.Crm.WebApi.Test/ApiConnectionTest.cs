@@ -29,7 +29,7 @@ namespace Xrm.Crm.WebApi.Test
             Assert.True(apiMetadata.Count > 0);
         }   
 
-        [Fact]
+               [Fact]
         public void CreateTest()
         {   
             var lead = new Entity("lead");
@@ -37,6 +37,53 @@ namespace Xrm.Crm.WebApi.Test
             lead["lastname"] = "Test";
             var LeadId = WebApi.Create(lead);
             Assert.NotEqual(LeadId, Guid.Empty);
+        }
+
+
+        [Fact]
+        public void FetchXmlTest()
+        {   
+            var lead = new Entity("lead");
+            lead["firstname"] = "Test";
+            lead["lastname"] = "Test";
+            var LeadId = WebApi.RetrieveMultiple(@"<fetch>
+                        <entity name='new_chat'>
+                            <attribute name='activityid' />
+                                <filter>
+                                    <condition attribute='activityid' operator='eq' value='{477B2FBB-E218-E811-8114-E0071B6FC061}' />
+                                </filter>
+                                <link-entity name='activityparty' from='activityid' to='activityid' alias='activityparty' link-type='inner'>
+                                    <all-attributes/>
+                                    <filter type='or'>
+                                        <condition attribute='participationtypemask' operator='eq' value='2' />                                        
+                                        <condition attribute='participationtypemask' operator='eq' value='1' />
+                                    </filter>
+                                </link-entity>
+                        </entity>
+                    </fetch>");
+        }
+
+        [Fact]
+        public void FetchXmlNestedEntitiesTest()
+        {   
+            var lead = new Entity("lead");
+            lead["firstname"] = "Test";
+            lead["lastname"] = "Test";
+            var LeadId = WebApi.RetrieveMultiple(@"<fetch>
+                        <entity name='new_chat'>
+                            <all-attributes/>
+                                <filter>
+                                    <condition attribute='activityid' operator='eq' value='{477B2FBB-E218-E811-8114-E0071B6FC061}' />
+                                </filter>
+                                <link-entity name='activityparty' from='activityid' to='activityid' alias='activityparty' link-type='inner'>
+                                    <all-attributes/>
+                                    <filter type='or'>
+                                        <condition attribute='participationtypemask' operator='eq' value='2' />                                        
+                                        <condition attribute='participationtypemask' operator='eq' value='1' />
+                                    </filter>
+                                </link-entity>
+                        </entity>
+                    </fetch>");
         }
     }
 }

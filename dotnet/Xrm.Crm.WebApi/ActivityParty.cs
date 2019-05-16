@@ -8,5 +8,10 @@ namespace Xrm.Crm.WebApi
         public EntityReference TargetEntity {get; set;}
         public ParticipationTypeMask ParticipationTypeMask {get; set;}
         public Dictionary<string, object> Attributes { get; set; }
+
+        public ActivityParty()
+        {
+            Attributes = new Dictionary<string, object>();
+        }
     }
 }

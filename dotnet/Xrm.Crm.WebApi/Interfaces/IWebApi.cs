@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Enums;
 using Xrm.Crm.WebApi.Request;
 using Xrm.Crm.WebApi.Response;
@@ -9,6 +10,7 @@ namespace Xrm.Crm.WebApi.Interfaces
 {
     public interface IWebApi : IWebApiBatchOperations
     {
+        BaseAuthorization BaseAuthorization {get;}
         Guid Create (Entity entity);
         Task<Guid> CreateAsync (Entity entity);
         Entity Retrieve (string entityName, Guid entityId, params string[] properties);
@@ -35,5 +37,7 @@ namespace Xrm.Crm.WebApi.Interfaces
         Task<Guid> AddToQueueAsync(Guid queueId, EntityReference entity);
         void Disassociate (Entity entity, string navigationProperty);
         Task DisassociateAsync(Entity entity, string navigationProperty);
+        void AddListMembersList (Guid listId, List<Entity> members);
+        Task AddListMembersListAsync(Guid listId, List<Entity> members);
     }
 }
