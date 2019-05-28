@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrm.Crm.WebApi", "Xrm.Crm.WebApi\Xrm.Crm.WebApi.csproj", "{090E96C8-2FD6-4794-9023-91F31711E3DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrm.Crm.WebApi.Test", "Xrm.Crm.WebApi.Test\Xrm.Crm.WebApi.Test.csproj", "{60E3E2D6-D8C3-4750-8B8E-7C24A6FCE4DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{090E96C8-2FD6-4794-9023-91F31711E3DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{090E96C8-2FD6-4794-9023-91F31711E3DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{090E96C8-2FD6-4794-9023-91F31711E3DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{090E96C8-2FD6-4794-9023-91F31711E3DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60E3E2D6-D8C3-4750-8B8E-7C24A6FCE4DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60E3E2D6-D8C3-4750-8B8E-7C24A6FCE4DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60E3E2D6-D8C3-4750-8B8E-7C24A6FCE4DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60E3E2D6-D8C3-4750-8B8E-7C24A6FCE4DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A290629E-2953-4298-A093-47467954DCFB}
+	EndGlobalSection
+EndGlobal
