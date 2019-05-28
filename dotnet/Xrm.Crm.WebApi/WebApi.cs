@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Enums;
 using Xrm.Crm.WebApi.Response;
@@ -15,7 +13,8 @@ using Xrm.Crm.WebApi.Request;
 using Xrm.Crm.WebApi.Interfaces;
 using Xrm.Crm.WebApi.Exception;
 
-namespace Xrm.Crm.WebApi {
+namespace Xrm.Crm.WebApi
+{
     public partial class WebApi : IWebApi
     {
         private readonly BaseAuthorization _baseAuthorization;
