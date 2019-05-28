@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Exception;
 using Xrm.Crm.WebApi.Response;
@@ -17,33 +16,33 @@ namespace Xrm.Crm.WebApi.Metadata
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
         private readonly string _relationshipDefinitions = "RelationshipDefinitions/Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata?$select=SchemaName,ReferencedAttribute,ReferencedEntity,ReferencingAttribute,ReferencingEntity,ReferencedEntityNavigationPropertyName,ReferencingEntityNavigationPropertyName";
         private readonly string _attributeMetadata = " &$expand=Attributes($select=SchemaName)";
-                
-        private List<EntityDefinitions> entitiesDefinitions {get; set;}
-        public List<EntityDefinitions> EntitiesDefinitions 
+        private List<EntityDefinitions> entitiesDefinitions { get; set; }
+        public List<EntityDefinitions> EntitiesDefinitions
+
         {
             get
             {
-                if(entitiesDefinitions == null)
+                if (entitiesDefinitions == null)
                     SetEntityDefinitions().GetAwaiter().GetResult();
-                
+
                 return entitiesDefinitions;
             }
         }
 
-        private List<RelationshipDefinitions> relationshipDefinitions {get; set;}
-        public List<RelationshipDefinitions> RelationshipDefinitions 
+        private List<RelationshipDefinitions> relationshipDefinitions { get; set; }
+        public List<RelationshipDefinitions> RelationshipDefinitions
         {
             get
             {
-                if(relationshipDefinitions == null)
+                if (relationshipDefinitions == null)
                     SetRelationshipDefinitions().GetAwaiter().GetResult();
-                
+
                 return relationshipDefinitions;
             }
         }
 
-        public bool LoadAttributes {get; set;}
-        public bool LoadRelationshipDefinitions {get; set;}
+        public bool LoadAttributes { get; set; }
+        public bool LoadRelationshipDefinitions { get; set; }
 
         public EntityDefinitions this[string name]
         {
@@ -51,9 +50,9 @@ namespace Xrm.Crm.WebApi.Metadata
             {
                 var entityDefinitons = GetEntityDefinitions(name);
 
-                if(entityDefinitons!=null)
+                if (entityDefinitons != null)
                     return entityDefinitons;
-                    
+
                 SetEntityDefinitions().GetAwaiter().GetResult();
                 return GetEntityDefinitions(name);
             }
@@ -72,7 +71,7 @@ namespace Xrm.Crm.WebApi.Metadata
         {
             var url = _apiUrl + _entityDefinitionsUrl;
 
-            if(LoadAttributes)
+            if (LoadAttributes)
                 url += _attributeMetadata;
 
             var request = new HttpRequestMessage(new HttpMethod("GET"), url);
@@ -95,16 +94,17 @@ namespace Xrm.Crm.WebApi.Metadata
 
         public EntityDefinitions GetEntityDefinitions(string anyName)
         {
-            return EntitiesDefinitions.FirstOrDefault(e => 
-                    (e.LogicalName?.ToLower()??"").Equals(anyName.ToLower()) ||
-                    (e.CollectionSchemaName?.ToLower()??"").Equals(anyName.ToLower()) ||
-                    (e.EntitySetName?.ToLower()??"").Equals(anyName.ToLower())
+            return EntitiesDefinitions.FirstOrDefault(e =>
+                    (e.LogicalName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
+                    (e.CollectionSchemaName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
+                    (e.EntitySetName?.ToLower() ?? "").Equals(anyName.ToLower())
                 );
         }
 
-        public RelationshipDefinitions GetRelationshipDefinitions(string referencingEntity , string referencingAttribute, string referencedEntity){              
-            var relationship = RelationshipDefinitions.FirstOrDefault(r => 
-                    r.ReferencingEntity.ToLower()  == referencingEntity.ToLower() && 
+        public RelationshipDefinitions GetRelationshipDefinitions(string referencingEntity, string referencingAttribute, string referencedEntity)
+        {
+            var relationship = RelationshipDefinitions.FirstOrDefault(r =>
+                    r.ReferencingEntity.ToLower() == referencingEntity.ToLower() &&
                     r.ReferencingAttribute.ToLower() == referencingAttribute &&
                     r.ReferencedEntity.ToLower() == referencedEntity.ToLower()
                 );
@@ -112,18 +112,20 @@ namespace Xrm.Crm.WebApi.Metadata
             return relationship;
         }
 
-        private async Task SetRelationshipDefinitions(){
-            if(!LoadRelationshipDefinitions)
+        private async Task SetRelationshipDefinitions()
+        {
+            if (!LoadRelationshipDefinitions)
                 throw new WebApiException("Can't load RelationshipDefinitions the 'LoadRelationshipDefinitions' property is set to false.");
 
             var url = _apiUrl + _relationshipDefinitions;
-            using(var request = new HttpRequestMessage(new HttpMethod("GET"), url)){
+            using (var request = new HttpRequestMessage(new HttpMethod("GET"), url))
+            {
                 var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
                 ResponseValidator.EnsureSuccessStatusCode(response);
                 var data = await response.Content.ReadAsStringAsync();
                 var result = JObject.Parse(data);
                 relationshipDefinitions = result["value"].ToObject<List<RelationshipDefinitions>>();
-            }  
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Xrm.Crm.WebApi
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
             if (!string.IsNullOrWhiteSpace(Filter))
-                query["$filter"] = FetchXml;
+                query["$filter"] = Filter;
 
             if (Select?.Length > 0)
                 query["$select"] = String.Join(",", Select);
@@ -54,13 +54,18 @@ namespace Xrm.Crm.WebApi
 
             //TODO: Advanced options?
             if (SavedQuery != Guid.Empty)
+            {
                 query["savedQuery"] = SavedQuery.ToString();
-
-            if (UserQuery != Guid.Empty)
+            }
+            else if (UserQuery != Guid.Empty)
+            {
                 query["userQuery"] = UserQuery.ToString();
-
-            if (!string.IsNullOrWhiteSpace(FetchXml))
+            }
+            else if (!string.IsNullOrWhiteSpace(FetchXml))
+            {
                 query["fetchXml"] = FetchXml;
+            }
+
             //END: Advanced options?
 
             uriBuilder.Query = query.ToString();

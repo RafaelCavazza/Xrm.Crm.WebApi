@@ -38,7 +38,7 @@ namespace Xrm.Crm.WebApi.Authorization
         public override void RefreshCredentials()
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken());
-         }
+        }
 
         public string GetAccessToken()
         {
@@ -58,10 +58,10 @@ namespace Xrm.Crm.WebApi.Authorization
                 new KeyValuePair<string, string>("client_secret", _clientSecret),
                 new KeyValuePair<string, string>("resource", _crmBaseUrl)
             });
-            
+
             var result = httpClient.PostAsync(GetOauth2Url(), content).GetAwaiter().GetResult();
             result.EnsureSuccessStatusCode();
-            
+
             string resultContent = result.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             AuthenticationResult = JsonConvert.DeserializeObject<AuthenticationResult>(resultContent);
         }
@@ -74,19 +74,20 @@ namespace Xrm.Crm.WebApi.Authorization
         private Dictionary<string, string> GetConectionStringValues(string crmConnectionString)
         {
             var keysValues = crmConnectionString.Split(';');
-            var keysDictionary = new Dictionary<string,string>();
+            var keysDictionary = new Dictionary<string, string>();
 
-            foreach(var keyValue in keysValues)
+            foreach (var keyValue in keysValues)
             {
-                var key = keyValue.Substring(0,keyValue.IndexOf('='));
-                var value = keyValue.Substring(keyValue.IndexOf('=')+1);
-                keysDictionary.Add(key,value);
+                var key = keyValue.Substring(0, keyValue.IndexOf('='));
+                var value = keyValue.Substring(keyValue.IndexOf('=') + 1);
+                keysDictionary.Add(key, value);
             }
 
             return keysDictionary;
         }
 
-        private string GetOauth2Url(){
+        private string GetOauth2Url()
+        {
             return $"{Authority}/{_tenantId.ToString("D")}/oauth2/token";
         }
     }

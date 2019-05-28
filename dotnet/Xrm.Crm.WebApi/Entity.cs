@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 using System;
 
 namespace Xrm.Crm.WebApi
@@ -8,7 +6,7 @@ namespace Xrm.Crm.WebApi
     public class Entity
     {
         public Dictionary<string, object> Attributes { get; set; }            
-        public Dictionary<string, string> FormatedValues { get; set; }
+        public Dictionary<string, string> FormattedValues { get; set; }
         public Dictionary<string, object> KeyAttributes { get; set; }
         public string Etag { get; internal set; }
         public string LogicalName { get; set; }
@@ -19,8 +17,8 @@ namespace Xrm.Crm.WebApi
             if(Attributes == null)
                 Attributes = new Dictionary<string, object>();
 
-            if(FormatedValues == null)
-                FormatedValues = new Dictionary<string, string>();
+            if(FormattedValues == null)
+                FormattedValues = new Dictionary<string, string>();
 
             if(KeyAttributes == null)
                 KeyAttributes = new Dictionary<string, object>();
@@ -72,8 +70,11 @@ namespace Xrm.Crm.WebApi
             if(typeof(T) == typeof(int))
                 return (T) (object)Convert.ToInt32(Attributes[atributeName]);
 
-            if( ( typeof(DateTime) == typeof(T) ||  typeof(DateTime?) == typeof(T) ) && Attributes[atributeName] is string)
+            if(( typeof(DateTime) == typeof(T) ||  typeof(DateTime?) == typeof(T) ) && Attributes[atributeName] is string)
                 return (T) (object) Convert.ToDateTime(Attributes[atributeName]);
+
+            if(typeof(Guid) == typeof(T) && Attributes[atributeName] is string)                
+                return (T) (object) new Guid( (string) Attributes[atributeName]);
 
             return (T)Attributes[atributeName];
         }
@@ -81,6 +82,14 @@ namespace Xrm.Crm.WebApi
         public bool Contains(string atributeName)
         {        
             return !string.IsNullOrWhiteSpace(atributeName) && Attributes.ContainsKey(atributeName);
+        }
+
+        public bool ContainsValue(string atributeName)
+        {        
+            if(!Contains(atributeName))
+                return false;
+            
+            return Attributes[atributeName] != null;
         }
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace Xrm.Crm.WebApi.Exception
 {
     public class WebApiException : System.Exception

@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi;
-using System;
 
 namespace Xrm.Crm.WebApi.Response
 {
@@ -14,54 +12,75 @@ namespace Xrm.Crm.WebApi.Response
             var etag = jObject["@odata.etag"]?.ToString();
             var formatedValues = new Dictionary<string, string>();
             var attributes = jObject.ToObject<Dictionary<string, object>>();
-            var newAttributes = new Dictionary<string, object>(); 
-
+            var newAttributes = new Dictionary<string, object>();
+            var toRemove = new List<string>();
 
             var enttyReferenceAttributes = attributes
-                .Where(a => a.Key.StartsWith("_") && a.Key.EndsWith("_value"))
+                .Where(a => a.Key.EndsWith("@Microsoft.Dynamics.CRM.lookuplogicalname"))
                 .ToList();
 
-            foreach(var enttyReferenceAttribute in enttyReferenceAttributes)
+            foreach (var entyReferenceAttribute in enttyReferenceAttributes)
             {
-                var complements = attributes.Where(a => a.Key.Contains(enttyReferenceAttribute.Key)).ToList();
-                if(!complements.Any(k => k.Key.Contains("lookuplogicalname")))
-                    continue;
-                
-                var logicalname = complements.First(a => a.Key.Contains("lookuplogicalname")).Value.ToString();
-                var entityReference = new EntityReference(logicalname,enttyReferenceAttribute.Value.ToString());
-                entityReference.Name = complements.FirstOrDefault(c=> c.Key.Contains("FormattedValue")).Value?.ToString();
+                var key = entyReferenceAttribute.Key.Split('@')[0];
+                var complements = attributes.Where(a => a.Key.Contains(key)).ToList();
+                var logicalname = entyReferenceAttribute.Value.ToString();
+                var id = complements.First(a => a.Key == key).Value;
 
-                var attributeName = FormatAttributeName(enttyReferenceAttribute.Key);
+                var entityReference = new EntityReference(logicalname, id.ToString());
+                entityReference.Name = complements.FirstOrDefault(c => c.Key.Contains("FormattedValue")).Value?.ToString();
+
+                var attributeName = FormatAttributeName(key);
                 newAttributes.Add(attributeName, entityReference);
 
                 foreach (var attribute in complements)
-                    if(!attribute.Key.Contains("FormattedValue"))
-                        attributes.Remove(attribute.Key);
+                    if (!attribute.Key.Contains("FormattedValue") && !toRemove.Contains(attribute.Key))
+                        toRemove.Add(attribute.Key);
             }
 
-            foreach (var atribute in attributes)
+            foreach (var att in toRemove)
+                attributes.Remove(att);
+
+            foreach (var attribute in attributes)
             {
-                if (IsFormatedValue(atribute.Key))
+                if (attribute.Value is JArray)
                 {
-                    AddFormatedValue(atribute.Key, atribute.Value?.ToString(), formatedValues);
+                    var entities = new List<Entity>();
+                    foreach (var nestedEntity in (JArray)attribute.Value)
+                    {
+                        try
+                        {
+                            entities.Add(FormatEntityResponse((JObject)nestedEntity));
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+                    attributes[attribute.Key] = entities;
                     continue;
                 }
 
-                if (!atribute.Key.Contains("_value") && !atribute.Key.Contains("_x002e_") && !atribute.Key.Contains("_x0040_"))
+                if (IsFormatedValue(attribute.Key))
+                {
+                    AddFormatedValue(attribute.Key, attribute.Value?.ToString(), formatedValues);
                     continue;
-    
-                var newName = FormatAttributeName(atribute.Key);
+                }
+
+                if (!attribute.Key.Contains("_value") && !attribute.Key.Contains("_x002e_") && !attribute.Key.Contains("_x0040_"))
+                    continue;
+
+                var newName = FormatAttributeName(attribute.Key);
 
                 if (!attributes.ContainsKey(newName) && !string.IsNullOrWhiteSpace(newName))
-                    newAttributes.Add(newName, atribute.Value);
+                    newAttributes.Add(newName, attribute.Value);
             }
 
             foreach (var attribute in newAttributes)
-                attributes.Add(attribute.Key,attribute.Value);
-            
+                attributes.Add(attribute.Key, attribute.Value);
+
             var entity = new Entity();
-            entity.Attributes = attributes; 
-            entity.FormatedValues = formatedValues;
+            entity.Attributes = attributes;
+            entity.FormattedValues = formatedValues;
             return entity;
         }
 
@@ -82,17 +101,13 @@ namespace Xrm.Crm.WebApi.Response
         {
             var newName = name.Replace("@OData.Community.Display.V1.FormattedValue", "");
             newName = FormatAttributeName(newName);
-
             if (!formatedValues.ContainsKey(newName) && !string.IsNullOrWhiteSpace(newName))
                 formatedValues.Add(newName, value);
         }
 
         private static bool IsFormatedValue(string name)
-        {   
-            if(string.IsNullOrWhiteSpace(name))
-                return false;
-
-            return name.Contains("@OData.Community.Display.V1.FormattedValue");
+        {
+            return (name ?? "").Contains("@OData.Community.Display.V1.FormattedValue");
         }
     }
 }
