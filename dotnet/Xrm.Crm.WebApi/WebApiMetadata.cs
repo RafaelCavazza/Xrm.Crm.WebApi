@@ -14,14 +14,14 @@ namespace Xrm.Crm.WebApi
         private readonly BaseAuthorization _baseAuthorization;
         private readonly Uri _apiUrl;
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
-        private List<EntityDefinitions> entitiesDefinitions {get; set;}
-        public List<EntityDefinitions> EntitiesDefinitions 
+        private List<EntityDefinitions> entitiesDefinitions { get; set; }
+        public List<EntityDefinitions> EntitiesDefinitions
         {
             get
             {
-                if(entitiesDefinitions == null)
+                if (entitiesDefinitions == null)
                     SetEntityDefinitions().GetAwaiter().GetResult();
-                
+
                 return entitiesDefinitions;
             }
         }
@@ -32,9 +32,9 @@ namespace Xrm.Crm.WebApi
             {
                 var entityDefinitons = GetEntityDefinitions(name);
 
-                if(entityDefinitons!=null)
+                if (entityDefinitons != null)
                     return entityDefinitons;
-                    
+
                 SetEntityDefinitions().GetAwaiter().GetResult();
                 return GetEntityDefinitions(name);
             }
@@ -72,10 +72,10 @@ namespace Xrm.Crm.WebApi
 
         public EntityDefinitions GetEntityDefinitions(string anyName)
         {
-            return EntitiesDefinitions.FirstOrDefault(e => 
-                    (e.LogicalName?.ToLower()??"").Equals(anyName.ToLower()) ||
-                    (e.CollectionSchemaName?.ToLower()??"").Equals(anyName.ToLower()) ||
-                    (e.EntitySetName?.ToLower()??"").Equals(anyName.ToLower())
+            return EntitiesDefinitions.FirstOrDefault(e =>
+                    (e.LogicalName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
+                    (e.CollectionSchemaName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
+                    (e.EntitySetName?.ToLower() ?? "").Equals(anyName.ToLower())
                 );
         }
     }
