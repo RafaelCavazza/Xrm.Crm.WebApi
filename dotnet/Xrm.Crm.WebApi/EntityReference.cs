@@ -8,6 +8,7 @@ namespace Xrm.Crm.WebApi
         public string LogicalName {get; internal set;}        
         public Guid Id {get; internal set;}
         public string Name {get; set;}
+        public string LookupLogicalName {get; set;}        
         public Dictionary<string, object> KeyAttributes { get; set; }
         
         public EntityReference(string logicalName, string id) : this (logicalName, new Guid(id))
