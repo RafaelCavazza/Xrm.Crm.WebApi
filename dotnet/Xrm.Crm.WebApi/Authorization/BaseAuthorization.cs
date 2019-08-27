@@ -37,7 +37,7 @@ namespace Xrm.Crm.WebApi.Authorization
                 httpClient?.DefaultRequestHeaders?.Add("MSCRMCallerID", CallerId.ToString());            
         }
 
-        public void ConfigHttpClient()
+        public void ConfigureHttpClient()
         {   
             if(!httpClient.DefaultRequestHeaders.Contains("Accept"))
                 httpClient.DefaultRequestHeaders.Add("Accept", "application/json");

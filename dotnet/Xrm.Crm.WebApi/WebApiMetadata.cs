@@ -50,7 +50,7 @@ namespace Xrm.Crm.WebApi
         public WebApiMetadata(BaseAuthorization baseAuthorization, string apiUrl)
         {
             _baseAuthorization = baseAuthorization;
-            _baseAuthorization.ConfigHttpClient();
+            _baseAuthorization.ConfigureHttpClient();
             _apiUrl = new Uri(apiUrl);
         }
 
