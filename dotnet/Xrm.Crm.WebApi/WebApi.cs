@@ -47,7 +47,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
 
             return GetEntityIdFromResponse(fullUrl, response);
@@ -74,7 +74,7 @@ namespace Xrm.Crm.WebApi
                 fullUrl += "?$select=" + string.Join(",", properties);
 
             var request = new HttpRequestMessage(new HttpMethod("GET"), fullUrl);
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
 
             var data = await response.Content.ReadAsStringAsync();
@@ -111,7 +111,7 @@ namespace Xrm.Crm.WebApi
             foreach (var header in options.GetPreferList())
                 request.Headers.Add("Prefer", header);
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
 
             var data = await response.Content.ReadAsStringAsync();
@@ -120,7 +120,7 @@ namespace Xrm.Crm.WebApi
 
             while (!string.IsNullOrWhiteSpace(retrieveMultipleResponse.NextLink))
             {
-                var nextResults = await _baseAuthorization.GetHttpCliente().GetAsync(retrieveMultipleResponse.NextLink);
+                var nextResults = await _baseAuthorization.GetHttpClient().GetAsync(retrieveMultipleResponse.NextLink);
                 ResponseValidator.EnsureSuccessStatusCode(nextResults);
                 var nextData = await nextResults.Content.ReadAsStringAsync();
                 var nextValues = JObject.Parse(nextData);
@@ -172,7 +172,7 @@ namespace Xrm.Crm.WebApi
             if (upsertOptions == UpsertOptions.OnlyCreate)
                 request.Headers.Add("If-None-Match", "*");
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -184,7 +184,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent("{}", Encoding.UTF8, "application/json")
             };
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -216,7 +216,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -236,7 +236,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
             var responseContent = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<JObject>(responseContent);
@@ -272,7 +272,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
             var responseContent = await response.Content.ReadAsStringAsync();
             var data = JObject.Parse(responseContent);
@@ -293,7 +293,7 @@ namespace Xrm.Crm.WebApi
             {
                 Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json")
             };
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -317,7 +317,7 @@ namespace Xrm.Crm.WebApi
             {
                 Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json")
             };
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
             var data = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return data["QueueItemId"].ToObject<Guid>();
@@ -332,7 +332,7 @@ namespace Xrm.Crm.WebApi
         {
             var fullUrl = ApiUrl + RequestEntityParser.GetEntityApiUrl(entity, WebApiMetadata) + "/" + navigationProperty + "/$ref";
             var request = new HttpRequestMessage(new HttpMethod("DELETE"), fullUrl);
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -377,7 +377,7 @@ namespace Xrm.Crm.WebApi
             {
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
     }

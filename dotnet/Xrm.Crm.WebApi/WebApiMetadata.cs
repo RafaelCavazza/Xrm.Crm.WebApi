@@ -72,7 +72,7 @@ namespace Xrm.Crm.WebApi
 		{
 			var url = _apiUrl + _entityDefinitionsUrl;
 			var request = new HttpRequestMessage(new HttpMethod("GET"), url);
-			var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+			var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
 			ResponseValidator.EnsureSuccessStatusCode(response);
 			var data = await response.Content.ReadAsStringAsync();
 			var result = JObject.Parse(data);

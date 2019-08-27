@@ -21,7 +21,7 @@ namespace Xrm.Crm.WebApi.Authorization
 
         public abstract void RefreshCredentials();
 
-        public HttpClient GetHttpCliente()
+        public HttpClient GetHttpClient()
         {
             RefreshCredentials();
             RefreshCallerId();
