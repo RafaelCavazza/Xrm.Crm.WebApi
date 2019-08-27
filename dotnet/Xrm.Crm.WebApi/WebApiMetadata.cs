@@ -16,27 +16,31 @@ namespace Xrm.Crm.WebApi
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
 		private List<EntityDefinition> entitiesDefinitions;
         
-		public List<EntityDefinitions> EntitiesDefinitions
+		public List<EntityDefinition> EntityDefinitions
         {
             get
             {
                 if (entitiesDefinitions == null)
-                    SetEntityDefinitions().GetAwaiter().GetResult();
+				{
+					SetEntityDefinitions().GetAwaiter().GetResult();
+				}
 
-                return entitiesDefinitions;
+				return entitiesDefinitions;
             }
         }
 
-        public EntityDefinitions this[string name]
+        public EntityDefinition this[string name]
         {
             get
             {
                 var entityDefinitons = GetEntityDefinitions(name);
 
                 if (entityDefinitons != null)
-                    return entityDefinitons;
+				{
+					return entityDefinitons;
+				}
 
-                SetEntityDefinitions().GetAwaiter().GetResult();
+				SetEntityDefinitions().GetAwaiter().GetResult();
                 return GetEntityDefinitions(name);
             }
         }
@@ -60,9 +64,9 @@ namespace Xrm.Crm.WebApi
             return this[name]?.LogicalName;
         }
 
-        public EntityDefinitions GetEntityDefinitions(string anyName)
+        public EntityDefinition GetEntityDefinitions(string anyName)
         {
-            return EntitiesDefinitions.FirstOrDefault(e =>
+            return EntityDefinitions.FirstOrDefault(e =>
                     (e.LogicalName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase) ||
                     (e.CollectionSchemaName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase) ||
                     (e.EntitySetName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase)
@@ -76,7 +80,7 @@ namespace Xrm.Crm.WebApi
 			ResponseValidator.EnsureSuccessStatusCode(response);
 			var data = await response.Content.ReadAsStringAsync();
 			var result = JObject.Parse(data);
-			entitiesDefinitions = result["value"].ToObject<List<EntityDefinitions>>();
+			entitiesDefinitions = result["value"].ToObject<List<EntityDefinition>>();
 		}
     }
 }

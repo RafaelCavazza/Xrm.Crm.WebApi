@@ -128,7 +128,7 @@ namespace Xrm.Crm.WebApi
             }
 
             var logicalName = WebApiMetadata.GetLogicalName(entityCollection);
-            var entityDefinition = WebApiMetadata.EntitiesDefinitions.FirstOrDefault(e => e.LogicalName == logicalName);
+            var entityDefinition = WebApiMetadata.EntityDefinitions.FirstOrDefault(e => e.LogicalName == logicalName);
             var primaryKey = entityDefinition?.PrimaryIdAttribute;
 
             foreach (var entity in retrieveMultipleResponse.Entities)

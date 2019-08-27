@@ -11,7 +11,7 @@ namespace Xrm.Crm.WebApi.Request
         public EntityReference Subordinate {get;set;}
         public Dictionary<string, object> UpdateContent {get;set;}
         public bool ParentingChecks {get;set;}
-        private EntityDefinitions EntityDefinitions;
+        private EntityDefinition entityDefinition;
 
         private static string[] MergeEntities = new string[] {"account","contact","incident","lead"};
 
@@ -28,23 +28,23 @@ namespace Xrm.Crm.WebApi.Request
 
         public JProperty GetTargetProperty(){
             var jObject = new JObject();
-            jObject[EntityDefinitions.PrimaryIdAttribute] = Target.Id.ToString("D");
-            jObject["@odata.type"] = $"Microsoft.Dynamics.CRM.{EntityDefinitions.LogicalName}";
+            jObject[entityDefinition.PrimaryIdAttribute] = Target.Id.ToString("D");
+            jObject["@odata.type"] = $"Microsoft.Dynamics.CRM.{entityDefinition.LogicalName}";
             return new JProperty("Target",jObject);
         }
 
         public JProperty GetSubordinateProperty(){
             var jObject = new JObject();
-            jObject[EntityDefinitions.PrimaryIdAttribute] = Subordinate.Id.ToString("D");
-            jObject["@odata.type"] = $"Microsoft.Dynamics.CRM.{EntityDefinitions.LogicalName}";
+            jObject[entityDefinition.PrimaryIdAttribute] = Subordinate.Id.ToString("D");
+            jObject["@odata.type"] = $"Microsoft.Dynamics.CRM.{entityDefinition.LogicalName}";
             return new JProperty("Subordinate",jObject);
         }
 
         public JProperty GetUpdateContent(WebApiMetadata webApiMetadata){
 
             var jObject = new JObject();
-            jObject["@odata.type"] = $"Microsoft.Dynamics.CRM.{EntityDefinitions.LogicalName}";
-            jObject[EntityDefinitions.PrimaryIdAttribute] = Target.Id.ToString("D");
+            jObject["@odata.type"] = $"Microsoft.Dynamics.CRM.{entityDefinition.LogicalName}";
+            jObject[entityDefinition.PrimaryIdAttribute] = Target.Id.ToString("D");
 
             if(UpdateContent == null)
                 return new JProperty("UpdateContent", jObject);
@@ -74,7 +74,7 @@ namespace Xrm.Crm.WebApi.Request
             if(MergeEntities.Contains(targetEntityDefinitions.LogicalName) == false )
                 throw new WebApiException($"Entity with name '{targetEntityDefinitions.LogicalName}' is not supported for merge.");
 
-            EntityDefinitions = targetEntityDefinitions;
+            entityDefinition = targetEntityDefinitions;
         }
     }
 }
