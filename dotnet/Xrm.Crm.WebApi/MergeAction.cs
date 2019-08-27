@@ -65,8 +65,8 @@ namespace Xrm.Crm.WebApi.Request
             if(Subordinate == null)
                 throw new WebApiException("Missing 'Subordinate' value.");
 
-            var targetEntityDefinitions = webApiMetadata.GetEntityDefinitions(Target.LogicalName);
-            var subordinateEntityDefinitions = webApiMetadata.GetEntityDefinitions(Target.LogicalName);
+            var targetEntityDefinitions = webApiMetadata.GetEntityDefinition(Target.LogicalName);
+            var subordinateEntityDefinitions = webApiMetadata.GetEntityDefinition(Target.LogicalName);
 
             if(targetEntityDefinitions.LogicalName != subordinateEntityDefinitions.LogicalName)
                 throw new WebApiException("Target and Subordinate must be the same entity type.");

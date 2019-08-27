@@ -22,7 +22,7 @@ namespace Xrm.Crm.WebApi
             {
                 if (entitiesDefinitions == null)
 				{
-					SetEntityDefinitions().GetAwaiter().GetResult();
+					LoadEntityDefinitions().GetAwaiter().GetResult();
 				}
 
 				return entitiesDefinitions;
@@ -33,15 +33,15 @@ namespace Xrm.Crm.WebApi
         {
             get
             {
-                var entityDefinitons = GetEntityDefinitions(name);
+                var entityDefinitons = GetEntityDefinition(name);
 
                 if (entityDefinitons != null)
 				{
 					return entityDefinitons;
 				}
 
-				SetEntityDefinitions().GetAwaiter().GetResult();
-                return GetEntityDefinitions(name);
+				LoadEntityDefinitions().GetAwaiter().GetResult();
+                return GetEntityDefinition(name);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Xrm.Crm.WebApi
             return this[name]?.LogicalName;
         }
 
-        public EntityDefinition GetEntityDefinitions(string anyName)
+        public EntityDefinition GetEntityDefinition(string anyName)
         {
             return EntityDefinitions.FirstOrDefault(e =>
                     (e.LogicalName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase) ||
@@ -72,7 +72,7 @@ namespace Xrm.Crm.WebApi
                     (e.EntitySetName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase)
                 );
         }
-		public async Task SetEntityDefinitions()
+		public async Task LoadEntityDefinitions()
 		{
 			var url = _apiUrl + _entityDefinitionsUrl;
 			var request = new HttpRequestMessage(new HttpMethod("GET"), url);

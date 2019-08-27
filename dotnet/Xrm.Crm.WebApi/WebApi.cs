@@ -244,7 +244,7 @@ namespace Xrm.Crm.WebApi
 
             foreach (var entity in entities)
             {
-                var entityDefinition = WebApiMetadata.GetEntityDefinitions(entity.LogicalName);
+                var entityDefinition = WebApiMetadata.GetEntityDefinition(entity.LogicalName);
                 var primaryKey = entityDefinition?.PrimaryIdAttribute;
                 if (entity.Contains(primaryKey))
                     entity.Id = Guid.Parse(entity.GetAttributeValue<string>(primaryKey));
@@ -306,7 +306,7 @@ namespace Xrm.Crm.WebApi
         {
 
             var fullUrl = $"{ApiUrl}/queues{queueId.ToString("P")}/Microsoft.Dynamics.CRM.AddToQueue";
-            var entityDefinitions = WebApiMetadata.GetEntityDefinitions(entity.LogicalName);
+            var entityDefinitions = WebApiMetadata.GetEntityDefinition(entity.LogicalName);
             var target = new JObject();
             target[entityDefinitions.PrimaryIdAttribute] = entity.Id.ToString("D");
             target["@odata.type"] = $"Microsoft.Dynamics.CRM.{entityDefinitions.LogicalName}";
