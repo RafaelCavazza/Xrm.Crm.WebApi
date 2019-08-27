@@ -14,7 +14,7 @@ namespace Xrm.Crm.WebApi
         private readonly BaseAuthorization _baseAuthorization;
         private readonly Uri _apiUrl;
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
-        private List<EntityDefinitions> entitiesDefinitions { get; set; }
+		private List<EntityDefinition> entitiesDefinitions;
         
 		public List<EntityDefinitions> EntitiesDefinitions
         {
