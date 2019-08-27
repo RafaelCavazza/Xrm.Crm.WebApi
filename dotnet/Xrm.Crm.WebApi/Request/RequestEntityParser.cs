@@ -25,7 +25,7 @@ namespace Xrm.Crm.WebApi.Request
             string logicalName = entityReference.LogicalName.ToLower();
             string entitySetName = webApiMetadata.GetEntitySetName(logicalName);
             
-			if(entityReference.KeyAttributes?.Any() == true)
+            if(entityReference.KeyAttributes?.Any() == true)
             {
                 IEnumerable<string> keys = entityReference.KeyAttributes.Select( s => $"{s.Key}='{s.Value.ToString().Replace("'", "''")}'");
                 return $"{entitySetName}({string.Join("&",keys)})";
@@ -40,11 +40,11 @@ namespace Xrm.Crm.WebApi.Request
             jObject["participationtypemask"] = (int) activityParty.ParticipationTypeMask;
             
             if(activityParty.TargetEntity != null)
-			{
-				jObject[$"partyid_{activityParty.TargetEntity.LogicalName}@odata.bind"] = EntityReferenceTostring(activityParty.TargetEntity, webApiMetadata);
-			}
+            {
+                jObject[$"partyid_{activityParty.TargetEntity.LogicalName}@odata.bind"] = EntityReferenceTostring(activityParty.TargetEntity, webApiMetadata);
+            }
 
-			foreach(KeyValuePair<string, object> attribute in activityParty.Attributes){
+            foreach(KeyValuePair<string, object> attribute in activityParty.Attributes){
                 jObject.Add(attribute.Key, JValue.FromObject(attribute.Value));
             }
 
@@ -61,48 +61,48 @@ namespace Xrm.Crm.WebApi.Request
             }
 
             if(entity.Id != Guid.Empty)
-			{
-				return entitySetName + entity.Id.ToString("P");
-			}
+            {
+                return entitySetName + entity.Id.ToString("P");
+            }
 
-			return entitySetName;
+            return entitySetName;
         }
 
         public static JProperty GetJTokenFromAttribute(string key, object value, WebApiMetadata webApiMetadata){
 
             switch (value)
-			{
-				case null:
-					return new JProperty(key, null);
+            {
+                case null:
+                    return new JProperty(key, null);
 
-				case EntityReference reference:
-					return new JProperty(key + "@odata.bind", EntityReferenceTostring(reference, webApiMetadata));
+                case EntityReference reference:
+                    return new JProperty(key + "@odata.bind", EntityReferenceTostring(reference, webApiMetadata));
 
-				case IEnumerable<ActivityParty> activityParties:
-				{
-					var jArray = new JArray();
+                case IEnumerable<ActivityParty> activityParties:
+                {
+                    var jArray = new JArray();
                
-					foreach(ActivityParty activityParty in activityParties)
-					{
-						jArray.Add(ActivityPartyToJObject(activityParty, webApiMetadata));
-					}
+                    foreach(ActivityParty activityParty in activityParties)
+                    {
+                        jArray.Add(ActivityPartyToJObject(activityParty, webApiMetadata));
+                    }
 
-					return new JProperty(key, jArray);
-				}
+                    return new JProperty(key, jArray);
+                }
 
-				case List<Entity> list:
-				{
-					var objects = new JArray();
-					foreach(Entity nestedEntity in list)
-					{
-						objects.Add(EntityToJObject(nestedEntity, webApiMetadata));
-					}
-					return new JProperty(key, objects);
-				}
+                case List<Entity> list:
+                {
+                    var objects = new JArray();
+                    foreach(Entity nestedEntity in list)
+                    {
+                        objects.Add(EntityToJObject(nestedEntity, webApiMetadata));
+                    }
+                    return new JProperty(key, objects);
+                }
 
-				default:
-					return new JProperty(key, JValue.FromObject(value));
-			}
-		}
+                default:
+                    return new JProperty(key, JValue.FromObject(value));
+            }
+        }
     }
 }

@@ -14,18 +14,18 @@ namespace Xrm.Crm.WebApi
         private readonly BaseAuthorization _baseAuthorization;
         private readonly Uri _apiUrl;
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
-		private List<EntityDefinition> entitiesDefinitions;
+        private List<EntityDefinition> entitiesDefinitions;
         
-		public List<EntityDefinition> EntityDefinitions
+        public List<EntityDefinition> EntityDefinitions
         {
             get
             {
                 if (entitiesDefinitions == null)
-				{
-					LoadEntityDefinitions().GetAwaiter().GetResult();
-				}
+                {
+                    LoadEntityDefinitions().GetAwaiter().GetResult();
+                }
 
-				return entitiesDefinitions;
+                return entitiesDefinitions;
             }
         }
 
@@ -36,11 +36,11 @@ namespace Xrm.Crm.WebApi
                 var entityDefinitons = GetEntityDefinition(name);
 
                 if (entityDefinitons != null)
-				{
-					return entityDefinitons;
-				}
+                {
+                    return entityDefinitons;
+                }
 
-				LoadEntityDefinitions().GetAwaiter().GetResult();
+                LoadEntityDefinitions().GetAwaiter().GetResult();
                 return GetEntityDefinition(name);
             }
         }
@@ -72,15 +72,15 @@ namespace Xrm.Crm.WebApi
                     (e.EntitySetName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase)
                 );
         }
-		public async Task LoadEntityDefinitions()
-		{
-			var url = _apiUrl + _entityDefinitionsUrl;
-			var request = new HttpRequestMessage(new HttpMethod("GET"), url);
-			var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
-			ResponseValidator.EnsureSuccessStatusCode(response);
-			var data = await response.Content.ReadAsStringAsync();
-			var result = JObject.Parse(data);
-			entitiesDefinitions = result["value"].ToObject<List<EntityDefinition>>();
-		}
+        public async Task LoadEntityDefinitions()
+        {
+            var url = _apiUrl + _entityDefinitionsUrl;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            ResponseValidator.EnsureSuccessStatusCode(response);
+            var data = await response.Content.ReadAsStringAsync();
+            var result = JObject.Parse(data);
+            entitiesDefinitions = result["value"].ToObject<List<EntityDefinition>>();
+        }
     }
 }
