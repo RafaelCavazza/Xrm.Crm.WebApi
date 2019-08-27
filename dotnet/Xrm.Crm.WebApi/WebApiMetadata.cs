@@ -15,7 +15,8 @@ namespace Xrm.Crm.WebApi
         private readonly Uri _apiUrl;
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
         private List<EntityDefinitions> entitiesDefinitions { get; set; }
-        public List<EntityDefinitions> EntitiesDefinitions
+        
+		public List<EntityDefinitions> EntitiesDefinitions
         {
             get
             {
@@ -49,17 +50,6 @@ namespace Xrm.Crm.WebApi
             _apiUrl = new Uri(apiUrl);
         }
 
-        public async Task SetEntityDefinitions()
-        {
-            var url = _apiUrl + _entityDefinitionsUrl;
-            var request = new HttpRequestMessage(new HttpMethod("GET"), url);
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
-            ResponseValidator.EnsureSuccessStatusCode(response);
-            var data = await response.Content.ReadAsStringAsync();
-            var result = JObject.Parse(data);
-            entitiesDefinitions = result["value"].ToObject<List<EntityDefinitions>>();
-        }
-
         public string GetEntitySetName(string name)
         {
             return this[name]?.EntitySetName;
@@ -73,10 +63,20 @@ namespace Xrm.Crm.WebApi
         public EntityDefinitions GetEntityDefinitions(string anyName)
         {
             return EntitiesDefinitions.FirstOrDefault(e =>
-                    (e.LogicalName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
-                    (e.CollectionSchemaName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
-                    (e.EntitySetName?.ToLower() ?? "").Equals(anyName.ToLower())
+                    (e.LogicalName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase) ||
+                    (e.CollectionSchemaName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase) ||
+                    (e.EntitySetName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase)
                 );
         }
+		public async Task SetEntityDefinitions()
+		{
+			var url = _apiUrl + _entityDefinitionsUrl;
+			var request = new HttpRequestMessage(new HttpMethod("GET"), url);
+			var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+			ResponseValidator.EnsureSuccessStatusCode(response);
+			var data = await response.Content.ReadAsStringAsync();
+			var result = JObject.Parse(data);
+			entitiesDefinitions = result["value"].ToObject<List<EntityDefinitions>>();
+		}
     }
 }
