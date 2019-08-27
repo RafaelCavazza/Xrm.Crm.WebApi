@@ -24,7 +24,7 @@ namespace Xrm.Crm.WebApi
         public BaseAuthorization BaseAuthorization => _baseAuthorization;
 
         public WebApi(BaseAuthorization baseAuthorization) 
-			: this(baseAuthorization, baseAuthorization.GetCrmBaseUrl() + "/api/data/v8.2/") 
+			: this(baseAuthorization, baseAuthorization.GetCrmBaseUrl().TrimEnd('/') + "/api/data/v8.2/") 
 		{ }
 
         public WebApi(BaseAuthorization baseAuthorization, string apiUrl)
