@@ -20,23 +20,23 @@ namespace Xrm.Crm.WebApi
 {
     public partial class WebApi : IWebApi
     {
-        public readonly Uri ApiUrl;
+        public Uri ApiUrl { get; }
         public WebApiMetadata WebApiMetadata { get; internal set; }
         
-        private readonly BaseAuthorization _baseAuthorization;
-        public BaseAuthorization BaseAuthorization => _baseAuthorization;
+        public BaseAuthorization Authorization { get; }
 
 
-        public WebApi(BaseAuthorization baseAuthorization) 
-            : this(baseAuthorization, baseAuthorization.GetCrmBaseUrl().TrimEnd('/') + "/api/data/v8.2/") 
+        public WebApi(BaseAuthorization authorization) 
+            : this(authorization, authorization.GetCrmBaseUrl().TrimEnd('/') + "/api/data/v8.2/") 
         { }
 
-        public WebApi(BaseAuthorization baseAuthorization, string apiUrl)
+        public WebApi(BaseAuthorization authorization, string apiUrl)
         {
-            _baseAuthorization = baseAuthorization;
-            _baseAuthorization.ConfigureHttpClient();
+            Authorization = authorization;
+            Authorization.ConfigureHttpClient();
+
             ApiUrl = new Uri(apiUrl);
-            WebApiMetadata = new WebApiMetadata(baseAuthorization, apiUrl);
+            WebApiMetadata = new WebApiMetadata(authorization, apiUrl);
         }
 
         public Guid Create(Entity entity)
@@ -53,7 +53,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
 
             return GetEntityIdFromResponse(fullUrl, response);
@@ -82,7 +82,7 @@ namespace Xrm.Crm.WebApi
             }
 
             var request = new HttpRequestMessage(new HttpMethod("GET"), fullUrl);
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
 
             string data = await response.Content.ReadAsStringAsync();
@@ -121,7 +121,7 @@ namespace Xrm.Crm.WebApi
                 request.Headers.Add("Prefer", header);
             }
 
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
 
             string data = await response.Content.ReadAsStringAsync();
@@ -130,7 +130,7 @@ namespace Xrm.Crm.WebApi
 
             while (!string.IsNullOrWhiteSpace(retrieveMultipleResponse.NextLink))
             {
-                HttpResponseMessage nextResults = await _baseAuthorization.GetHttpClient().GetAsync(retrieveMultipleResponse.NextLink);
+                HttpResponseMessage nextResults = await Authorization.GetHttpClient().GetAsync(retrieveMultipleResponse.NextLink);
                 ResponseValidator.EnsureSuccessStatusCode(nextResults);
                 string nextData = await nextResults.Content.ReadAsStringAsync();
                 JObject nextValues = JObject.Parse(nextData);
@@ -188,7 +188,7 @@ namespace Xrm.Crm.WebApi
                 request.Headers.Add("If-None-Match", "*");
             }
 
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -200,7 +200,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent("{}", Encoding.UTF8, "application/json")
             };
 
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -222,7 +222,7 @@ namespace Xrm.Crm.WebApi
             jObject["Status"] = status;
             jObject["IncidentResolution"] = jIncidentResolution;
             jIncidentResolution["subject"] = incidentResolution.Subject;
-            jIncidentResolution["incidentid@odata.bind"] = $"/incidents{incidentResolution.IncidentId.ToString("P")}";
+            jIncidentResolution["incidentid@odata.bind"] = $"/incidents{incidentResolution.IncidentId:P}";
             if (incidentResolution.Timespent != null)
             {
                 jIncidentResolution["timespent"] = incidentResolution.Timespent;
@@ -235,7 +235,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -247,7 +247,7 @@ namespace Xrm.Crm.WebApi
         public async Task<List<Entity>> QualifyLeadAsync(QualifyLead action)
         {
 
-            string fullUrl = $"{ApiUrl}/leads({action.LeadId.ToString("P")})/Microsoft.Dynamics.CRM.QualifyLead";
+            string fullUrl = $"{ApiUrl}/leads({action.LeadId:P})/Microsoft.Dynamics.CRM.QualifyLead";
             JObject jObject = action.GetRequestObject();
 
             var request = new HttpRequestMessage(new HttpMethod("POST"), fullUrl)
@@ -255,7 +255,7 @@ namespace Xrm.Crm.WebApi
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
             string responseContent = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<JObject>(responseContent);
@@ -288,14 +288,14 @@ namespace Xrm.Crm.WebApi
                 jObject["TrackingToken"] = trackingToken;
             }
 
-            string fullUrl = $"{ApiUrl}/emails({activityId.ToString("P")})/Microsoft.Dynamics.CRM.SendEmail";
+            string fullUrl = $"{ApiUrl}/emails({activityId:P})/Microsoft.Dynamics.CRM.SendEmail";
 
             var request = new HttpRequestMessage(new HttpMethod("POST"), fullUrl)
             {
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
 
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
             string responseContent = await response.Content.ReadAsStringAsync();
             JObject data = JObject.Parse(responseContent);
@@ -316,7 +316,7 @@ namespace Xrm.Crm.WebApi
             {
                 Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json")
             };
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -328,7 +328,7 @@ namespace Xrm.Crm.WebApi
         public async Task<Guid> AddToQueueAsync(Guid queueId, EntityReference entity)
         {
 
-            string fullUrl = $"{ApiUrl}/queues{queueId.ToString("P")}/Microsoft.Dynamics.CRM.AddToQueue";
+            string fullUrl = $"{ApiUrl}/queues{queueId:P}/Microsoft.Dynamics.CRM.AddToQueue";
             EntityDefinition entityDefinitions = WebApiMetadata.GetEntityDefinition(entity.LogicalName);
             var target = new JObject();
             target[entityDefinitions.PrimaryIdAttribute] = entity.Id.ToString("D");
@@ -340,7 +340,7 @@ namespace Xrm.Crm.WebApi
             {
                 Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json")
             };
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
             var data = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return data["QueueItemId"].ToObject<Guid>();
@@ -355,7 +355,7 @@ namespace Xrm.Crm.WebApi
         {
             string fullUrl = ApiUrl + RequestEntityParser.GetEntityApiUrl(entity, WebApiMetadata) + "/" + navigationProperty + "/$ref";
             var request = new HttpRequestMessage(new HttpMethod("DELETE"), fullUrl);
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
@@ -402,7 +402,7 @@ namespace Xrm.Crm.WebApi
             {
                 Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
             };
-            HttpResponseMessage response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
     }

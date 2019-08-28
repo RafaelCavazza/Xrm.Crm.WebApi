@@ -12,24 +12,24 @@ namespace Xrm.Crm.WebApi.Interfaces
 {
     public interface IWebApi : IWebApiBatchOperations
     {
-        BaseAuthorization BaseAuthorization {get;}
+        BaseAuthorization Authorization {get;}
         Guid Create (Entity entity);
         Task<Guid> CreateAsync (Entity entity);
 
         Entity Retrieve (string entityName, Guid entityId, params string[] properties);
         Task<Entity> RetrieveAsync (string entityName, Guid entityId, params string[] properties);
         RetrieveMultipleResponse RetrieveMultiple (string entityCollection, RetrieveOptions options);
+        Task<RetrieveMultipleResponse> RetrieveMultipleAsync (string entityCollection, RetrieveOptions options);
         RetrieveMultipleResponse RetrieveMultiple (FetchXmlExpression fetchXml);
         Task<RetrieveMultipleResponse> RetrieveMultipleAsync (FetchXmlExpression fetchXml);
-        Task<RetrieveMultipleResponse> RetrieveMultipleAsync (string entityCollection, RetrieveOptions options);
        
         void Update (Entity entity);
         Task UpdateAsync (Entity entity);
         void Upsert (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None);
         Task UpsertAsync (Entity entity, UpsertOptions upsertOptions = UpsertOptions.None);
         
-        Task DeleteAsync (Entity entity);
         void Delete (Entity entity);
+        Task DeleteAsync (Entity entity);
         
         void CloseIncident (IncidentResolution incidentResolution, int status);
         Task CloseIncidentAsync (IncidentResolution incidentResolution, int status);

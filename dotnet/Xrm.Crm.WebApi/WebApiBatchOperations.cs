@@ -20,8 +20,10 @@ namespace Xrm.Crm.WebApi
         public async Task<BatchRequestResponse> BulkCreateAsync(List<Entity> entities)
         {
             var batchRequest = new BatchRequest();
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
+            {
                 batchRequest.AddRequest(new CreateRequest(entity));
+            }
 
             return await ExecuteBatchRequestAsync(batchRequest);
         }
@@ -35,8 +37,10 @@ namespace Xrm.Crm.WebApi
         public async Task<BatchRequestResponse> BulkUpdateAsync(List<Entity> entities)
         {
             var batchRequest = new BatchRequest();
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
+            {
                 batchRequest.AddRequest(new UpdateRequest(entity));
+            }
 
             return await ExecuteBatchRequestAsync(batchRequest);
         }
@@ -49,8 +53,10 @@ namespace Xrm.Crm.WebApi
         public async Task<BatchRequestResponse> BulkUpsertAsync(List<Entity> entities)
         {
             var batchRequest = new BatchRequest();
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
+            {
                 batchRequest.AddRequest(new UpsertRequest(entity));
+            }
 
             return await ExecuteBatchRequestAsync(batchRequest);
         }
@@ -63,8 +69,10 @@ namespace Xrm.Crm.WebApi
         public async Task<BatchRequestResponse> BulkDeleteAsync(List<Entity> entities)
         {
             var batchRequest = new BatchRequest();
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
+            {
                 batchRequest.AddRequest(new DeleteRequest(entity));
+            }
 
             return await ExecuteBatchRequestAsync(batchRequest);
         }
@@ -83,18 +91,20 @@ namespace Xrm.Crm.WebApi
 
         public async Task<BatchRequestResponse> ExecuteBatchRequestAsync(BatchRequest batchRequest)
         {
-            var requestBody = BatchRequestParser.GetRequestString(batchRequest, this);
+            string requestBody = BatchRequestParser.GetRequestString(batchRequest, this);
 
             var request = new HttpRequestMessage(new HttpMethod("POST"), ApiUrl + "$batch");
             SetRequestContent(request, requestBody, batchRequest.BatchId);
 
-            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
-            var data = await response.Content.ReadAsStringAsync();
+            string data = await response.Content.ReadAsStringAsync();
 
             var batchRequestResponse = new BatchRequestResponse(data);
-            foreach (var entity in batchRequestResponse.Entities)
+            foreach (Entity entity in batchRequestResponse.Entities)
+            {
                 entity.LogicalName = WebApiMetadata.GetLogicalName(entity.LogicalName);
+            }
 
             return batchRequestResponse;
         }
