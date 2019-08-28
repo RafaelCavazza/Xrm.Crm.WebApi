@@ -1,5 +1,6 @@
 using Xrm.Crm.WebApi.Request;
 using Newtonsoft.Json;
+using Xrm.Crm.WebApi.Models;
 
 namespace Xrm.Crm.WebApi.BatchOperations
 {

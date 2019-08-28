@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Xrm.Crm.WebApi.Actions;
 using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Enums;
+using Xrm.Crm.WebApi.Models;
 using Xrm.Crm.WebApi.Request;
 using Xrm.Crm.WebApi.Response;
 

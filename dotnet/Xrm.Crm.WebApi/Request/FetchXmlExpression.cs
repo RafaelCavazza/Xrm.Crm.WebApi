@@ -14,9 +14,9 @@ namespace Xrm.Crm.WebApi
         {
             document = XDocument.Load(new MemoryStream(Encoding.UTF8.GetBytes(fetchXml.ToLower())));
             LogicalName = (string) document
-                            .Descendants("entity")
-                            .First()
-                            .Attribute("name");
+                .Descendants("entity")
+                .First()
+                .Attribute("name");
         }
 
         public override string ToString()

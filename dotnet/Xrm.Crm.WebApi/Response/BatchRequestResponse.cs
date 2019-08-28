@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Xrm.Crm.WebApi.Exception;
+using Xrm.Crm.WebApi.Models;
 
 namespace Xrm.Crm.WebApi.Response
 {

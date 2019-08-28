@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using Xrm.Crm.WebApi.Exception;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Request
 {
     public class RetrieveOptions
     {

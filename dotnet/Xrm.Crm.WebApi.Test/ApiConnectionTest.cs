@@ -6,6 +6,7 @@ using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.BatchOperations;
 using Xrm.Crm.WebApi.Enums;
+using Xrm.Crm.WebApi.Models;
 using Xunit;
 
 namespace Xrm.Crm.WebApi.Test

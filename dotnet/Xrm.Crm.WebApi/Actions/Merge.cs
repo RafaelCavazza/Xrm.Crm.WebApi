@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi.Exception;
+using Xrm.Crm.WebApi.Models;
 using Xrm.Crm.WebApi.Request;
 
 namespace Xrm.Crm.WebApi.Actions

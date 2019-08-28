@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Models
 {
     public class Entity
     {

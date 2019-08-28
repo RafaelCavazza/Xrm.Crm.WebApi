@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xrm.Crm.WebApi.BatchOperations;
 using Xrm.Crm.WebApi.Interfaces;
+using Xrm.Crm.WebApi.Models;
 using Xrm.Crm.WebApi.Response;
 
 namespace Xrm.Crm.WebApi

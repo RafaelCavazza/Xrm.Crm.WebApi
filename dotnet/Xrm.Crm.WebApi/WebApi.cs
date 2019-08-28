@@ -14,6 +14,7 @@ using Xrm.Crm.WebApi.Exception;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Xrm.Crm.WebApi.Actions;
+using Xrm.Crm.WebApi.Models;
 
 namespace Xrm.Crm.WebApi
 {
