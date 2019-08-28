@@ -1,9 +1,9 @@
 using System;
 using Newtonsoft.Json.Linq;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Actions
 {
-    public class QualifyLeadAction
+    public class QualifyLead
     {
         public bool CreateAccount {get;set;}
         public bool CreateContact {get;set;}
@@ -16,7 +16,7 @@ namespace Xrm.Crm.WebApi
 
         public Guid LeadId {get;set;}
 
-        public QualifyLeadAction(Guid leadId, int status){
+        public QualifyLead(Guid leadId, int status){
             LeadId = leadId;
             Status = status;
         }
@@ -30,14 +30,20 @@ namespace Xrm.Crm.WebApi
             jObject["Status"] = Status;
 
             if(OpportunityCurrencyId != null)
+            {
                 jObject["OpportunityCurrencyId"] = OpportunityCurrencyId;
+            }
 
             if(SourceCampaignId != null)
+            {
                 jObject["SourceCampaignId"] = SourceCampaignId;
+            }
 
             if(ProcessInstanceId != null)
-                jObject["ProcessInstanceId"] = ProcessInstanceId;     
-            
+            {
+                jObject["ProcessInstanceId"] = ProcessInstanceId;
+            }
+
             return jObject;
         }
     }

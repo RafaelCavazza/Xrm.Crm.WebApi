@@ -1,6 +1,6 @@
 using System;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Actions
 {
     public class IncidentResolution
     {
@@ -9,7 +9,8 @@ namespace Xrm.Crm.WebApi
         public int? Timespent {get;set;}
         public string Description {get;set;}
 
-        public IncidentResolution(Guid incidentId){
+        public IncidentResolution(Guid incidentId)
+        {
             IncidentId = incidentId;
         }
     }
