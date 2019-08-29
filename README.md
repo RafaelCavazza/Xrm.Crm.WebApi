@@ -5,18 +5,20 @@
 
 Xrm.Crm.WebApi is a library intended to simplify the use of the Microsoft Dynamics Crm REST API.
 
-It was born out of necessity since the official SDK does not support dotnet core.
+It was created out of necessity since the official SDK does not support dotnet core.
 
 # Getting started
 
 Currently the library only supports the online version with the Server-to-server authentication.
+
+The on-premisse authentication and the user authentication will be added in the future.
 
 You can read more about the Server-to-server authentication and how to create a Dynamics 365 application user [here](<https://docs.microsoft.com/en-us/previous-versions/dynamicscrm-2016/developers-guide/mt790170(v=crm.8)>).
 
 Initializing the connection:
 
 ```c#
-    Guid clientId = new Guid(" {00000000-0000-0000-0000-000000000000}");
+    Guid clientId = new Guid("{00000000-0000-0000-0000-000000000000}");
     string clientSecret = "";
     string crmBaseUrl = "https://myOrg.crm.dynamics.com";
     Guid tenantId = new Guid("{00000000-0000-0000-0000-000000000000}");
@@ -27,7 +29,7 @@ Initializing the connection:
 
 # Basic CRUD
 
-All library the methos have a Async option.
+All the methos have a Async option.
 
 ## Create
 
@@ -111,7 +113,7 @@ Support for retrieving a single record using an alternate key will be added.
 
 ## Update
 
-The update method follows the same logic of the create method. The only difference is: the 'Entity' object needs to have a Id or a alternate key
+The update method follows the same logic from the create method. The only difference is: the 'Entity' object needs to have a Id or a alternate key
 
 ```c#
     Entity contact = new Entity("contact", new Guid("00000000-0000-0000-0000-000000000000"));
@@ -136,7 +138,7 @@ The upsert method is identical to the Update. You can control its behavior with 
 
 ## Delete
 
-To delete a 'Entity' you only need to provide the logical name, id or alternate key
+To delete a entity you only need to provide the logical name, id or alternate key
 
 ```c#
     Entity contact = new Entity("contact", new Guid("00000000-0000-0000-0000-000000000000"));
@@ -151,7 +153,7 @@ To delete a 'Entity' you only need to provide the logical name, id or alternate 
 
 ### Todos
 
--   Improve the Docs 😊
+-   Improve the Docs
 -   Improve the Todos 😊
 
 ## License
