@@ -158,4 +158,4 @@ To delete a entity you only need to provide the logical name, id or alternate ke
 
 ## License
 
-**Free Software, Hell Yeah!**
+MIT
