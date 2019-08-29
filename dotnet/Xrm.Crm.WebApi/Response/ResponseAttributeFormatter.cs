@@ -28,6 +28,7 @@ namespace Xrm.Crm.WebApi.Response
 
                 var entityReference = new EntityReference(logicalname, id.ToString());
                 entityReference.Name = complements.FirstOrDefault(c => c.Key.Contains("FormattedValue")).Value?.ToString();
+                entityReference.LookupLogicalName = complements.FirstOrDefault(c => c.Key.Contains("lookuplogicalname")).Value?.ToString();
 
                 var attributeName = FormatAttributeName(key);
                 newAttributes.Add(attributeName, entityReference);
@@ -40,6 +41,7 @@ namespace Xrm.Crm.WebApi.Response
             foreach (var att in toRemove)
                 attributes.Remove(att);
 
+            var nestedEntities = new Dictionary<string, List<Entity>>();
             foreach (var attribute in attributes)
             {
                 if (attribute.Value is JArray)
@@ -56,7 +58,7 @@ namespace Xrm.Crm.WebApi.Response
                             continue;
                         }
                     }
-                    attributes[attribute.Key] = entities;
+                    nestedEntities.Add(attribute.Key, entities);
                     continue;
                 }
 
@@ -74,6 +76,9 @@ namespace Xrm.Crm.WebApi.Response
                 if (!attributes.ContainsKey(newName) && !string.IsNullOrWhiteSpace(newName))
                     newAttributes.Add(newName, attribute.Value);
             }
+
+            foreach (var nestedEntity in nestedEntities)
+                attributes[nestedEntity.Key] = nestedEntity.Value;
 
             foreach (var attribute in newAttributes)
                 attributes.Add(attribute.Key, attribute.Value);

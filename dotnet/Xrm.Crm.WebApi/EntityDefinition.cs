@@ -1,6 +1,6 @@
 namespace Xrm.Crm.WebApi
 {
-    public class EntityDefinitions
+    public class EntityDefinition
     {
         public string LogicalName { get; set; }
         public string EntitySetName { get; set; }
