@@ -87,7 +87,7 @@ namespace Xrm.Crm.WebApi
             var request = new HttpRequestMessage(new HttpMethod("POST"), ApiUrl + "$batch");
             SetRequestContent(request, requestBody, batchRequest.BatchId);
 
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
             ResponseValidator.EnsureSuccessStatusCode(response);
             var data = await response.Content.ReadAsStringAsync();
 

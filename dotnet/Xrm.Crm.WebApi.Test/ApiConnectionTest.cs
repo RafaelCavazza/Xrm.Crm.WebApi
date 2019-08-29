@@ -25,7 +25,7 @@ namespace Xrm.Crm.WebApi.Test
 
         [Fact]
         public void ConnectToCrmTest(){
-            var apiMetadata = WebApi.WebApiMetadata.EntitiesDefinitions.ToList();
+            var apiMetadata = WebApi.WebApiMetadata.EntityDefinitions.ToList();
             Assert.True(apiMetadata.Count > 0);
         }   
 
