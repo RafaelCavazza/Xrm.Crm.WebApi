@@ -11,23 +11,24 @@ namespace Xrm.Crm.WebApi.Authorization
         protected HttpClient httpClient;
         protected HttpClientHandler handler;
 
-        public BaseAuthorization()
+        protected BaseAuthorization()
         {
             handler = new HttpClientHandler();
             handler.UseCookies = false;
             httpClient = new HttpClient(handler);
             Timeout = new TimeSpan(0,2,0);
             CallerId = Guid.Empty;
-        } 
-
-        public abstract void RefreshCredentials();
-
+        }
+        
         public HttpClient GetHttpClient()
         {
             RefreshCredentials();
             RefreshCallerId();
+
             return httpClient;
         }
+
+        public abstract void RefreshCredentials();
 
         private void RefreshCallerId()
         {

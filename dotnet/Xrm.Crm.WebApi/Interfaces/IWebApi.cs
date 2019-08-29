@@ -18,10 +18,10 @@ namespace Xrm.Crm.WebApi.Interfaces
 
         Entity Retrieve (string entityName, Guid entityId, params string[] properties);
         Task<Entity> RetrieveAsync (string entityName, Guid entityId, params string[] properties);
-        RetrieveMultipleResponse RetrieveMultiple (string entityCollection, RetrieveOptions options);
-        Task<RetrieveMultipleResponse> RetrieveMultipleAsync (string entityCollection, RetrieveOptions options);
         RetrieveMultipleResponse RetrieveMultiple (FetchXmlExpression fetchXml);
         Task<RetrieveMultipleResponse> RetrieveMultipleAsync (FetchXmlExpression fetchXml);
+        RetrieveMultipleResponse RetrieveMultiple (string entityCollection, RetrieveOptions options);
+        Task<RetrieveMultipleResponse> RetrieveMultipleAsync (string entityCollection, RetrieveOptions options);
        
         void Update (Entity entity);
         Task UpdateAsync (Entity entity);
