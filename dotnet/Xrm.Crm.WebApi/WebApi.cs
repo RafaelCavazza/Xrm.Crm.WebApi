@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Xrm.Crm.WebApi.Actions;
 using Xrm.Crm.WebApi.Models;
+using Xrm.Crm.WebApi.Serialization;
 
 namespace Xrm.Crm.WebApi
 {
@@ -37,6 +38,12 @@ namespace Xrm.Crm.WebApi
 
             ApiUrl = new Uri(apiUrl);
             WebApiMetadata = new WebApiMetadata(authorization, apiUrl);
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new WebApiContractResolver(),
+                Converters = new List<JsonConverter> { new EntityReferenceJsonConverter(WebApiMetadata) }
+            };
         }
 
         public Guid Create(Entity entity)
