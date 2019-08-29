@@ -23,8 +23,8 @@ namespace Xrm.Crm.WebApi
 
         public BaseAuthorization BaseAuthorization => _baseAuthorization;
 
-        public WebApi(BaseAuthorization baseAuthorization) 
-            : this(baseAuthorization, baseAuthorization.GetCrmBaseUrl().TrimEnd('/') + "/api/data/v8.2/") 
+        public WebApi(BaseAuthorization baseAuthorization)
+            : this(baseAuthorization, baseAuthorization.GetCrmBaseUrl().TrimEnd('/') + "/api/data/v8.2/")
         { }
 
         public WebApi(BaseAuthorization baseAuthorization, string apiUrl)
@@ -70,7 +70,7 @@ namespace Xrm.Crm.WebApi
         public async Task<Entity> RetrieveAsync(string entityName, Guid entityId, params string[] properties)
         {
             var entityCollection = WebApiMetadata.GetEntitySetName(entityName);
-            var fullUrl = ApiUrl + entityCollection + entityId.ToString("P");
+            var fullUrl = $"{ApiUrl}{entityCollection}{entityId:P}";
 
             if (properties?.Any() ?? false)
                 fullUrl += "?$select=" + string.Join(",", properties);
