@@ -14,29 +14,34 @@ namespace Xrm.Crm.WebApi
         private readonly BaseAuthorization _baseAuthorization;
         private readonly Uri _apiUrl;
         private readonly string _entityDefinitionsUrl = "EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryIdAttribute,CollectionSchemaName";
-        private List<EntityDefinitions> entitiesDefinitions { get; set; }
-        public List<EntityDefinitions> EntitiesDefinitions
+        private List<EntityDefinition> entitiesDefinitions;
+        
+        public List<EntityDefinition> EntityDefinitions
         {
             get
             {
                 if (entitiesDefinitions == null)
-                    SetEntityDefinitions().GetAwaiter().GetResult();
+                {
+                    LoadEntityDefinitions().GetAwaiter().GetResult();
+                }
 
                 return entitiesDefinitions;
             }
         }
 
-        public EntityDefinitions this[string name]
+        public EntityDefinition this[string name]
         {
             get
             {
-                var entityDefinitons = GetEntityDefinitions(name);
+                var entityDefinitons = GetEntityDefinition(name);
 
                 if (entityDefinitons != null)
+                {
                     return entityDefinitons;
+                }
 
-                SetEntityDefinitions().GetAwaiter().GetResult();
-                return GetEntityDefinitions(name);
+                LoadEntityDefinitions().GetAwaiter().GetResult();
+                return GetEntityDefinition(name);
             }
         }
 
@@ -45,19 +50,8 @@ namespace Xrm.Crm.WebApi
         public WebApiMetadata(BaseAuthorization baseAuthorization, string apiUrl)
         {
             _baseAuthorization = baseAuthorization;
-            _baseAuthorization.ConfigHttpClient();
+            _baseAuthorization.ConfigureHttpClient();
             _apiUrl = new Uri(apiUrl);
-        }
-
-        public async Task SetEntityDefinitions()
-        {
-            var url = _apiUrl + _entityDefinitionsUrl;
-            var request = new HttpRequestMessage(new HttpMethod("GET"), url);
-            var response = await _baseAuthorization.GetHttpCliente().SendAsync(request);
-            ResponseValidator.EnsureSuccessStatusCode(response);
-            var data = await response.Content.ReadAsStringAsync();
-            var result = JObject.Parse(data);
-            entitiesDefinitions = result["value"].ToObject<List<EntityDefinitions>>();
         }
 
         public string GetEntitySetName(string name)
@@ -70,13 +64,23 @@ namespace Xrm.Crm.WebApi
             return this[name]?.LogicalName;
         }
 
-        public EntityDefinitions GetEntityDefinitions(string anyName)
+        public EntityDefinition GetEntityDefinition(string anyName)
         {
-            return EntitiesDefinitions.FirstOrDefault(e =>
-                    (e.LogicalName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
-                    (e.CollectionSchemaName?.ToLower() ?? "").Equals(anyName.ToLower()) ||
-                    (e.EntitySetName?.ToLower() ?? "").Equals(anyName.ToLower())
+            return EntityDefinitions.FirstOrDefault(e =>
+                    (e.LogicalName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase) ||
+                    (e.CollectionSchemaName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase) ||
+                    (e.EntitySetName ?? "").Equals(anyName, StringComparison.OrdinalIgnoreCase)
                 );
+        }
+        public async Task LoadEntityDefinitions()
+        {
+            var url = _apiUrl + _entityDefinitionsUrl;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url);
+            var response = await _baseAuthorization.GetHttpClient().SendAsync(request);
+            ResponseValidator.EnsureSuccessStatusCode(response);
+            var data = await response.Content.ReadAsStringAsync();
+            var result = JObject.Parse(data);
+            entitiesDefinitions = result["value"].ToObject<List<EntityDefinition>>();
         }
     }
 }
