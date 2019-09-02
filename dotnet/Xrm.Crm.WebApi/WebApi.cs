@@ -233,36 +233,6 @@ namespace Xrm.Crm.WebApi
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
-        public void CloseIncident(IncidentResolution incidentResolution, int status)
-        {
-            CloseIncidentAsync(incidentResolution, status).GetAwaiter().GetResult();
-        }
-
-        public async Task CloseIncidentAsync(IncidentResolution incidentResolution, int status)
-        {
-            string fullUrl = ApiUrl + "CloseIncident";
-            var jObject = new JObject();
-            var jIncidentResolution = new JObject();
-            jObject["Status"] = status;
-            jObject["IncidentResolution"] = jIncidentResolution;
-            jIncidentResolution["subject"] = incidentResolution.Subject;
-            jIncidentResolution["incidentid@odata.bind"] = $"/incidents{incidentResolution.IncidentId:P}";
-            if (incidentResolution.Timespent != null)
-            {
-                jIncidentResolution["timespent"] = incidentResolution.Timespent;
-            }
-
-            jIncidentResolution["description"] = incidentResolution.Description;
-
-            var request = new HttpRequestMessage(new HttpMethod("POST"), fullUrl)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(jObject), Encoding.UTF8, "application/json")
-            };
-
-            HttpResponseMessage response = await Authorization.GetHttpClient().SendAsync(request);
-            ResponseValidator.EnsureSuccessStatusCode(response);
-        }
-
         public void QualifyLead(QualifyLeadRequest action)
         {
             QualifyLeadAsync(action).GetAwaiter().GetResult();

@@ -9,5 +9,10 @@ namespace Xrm.Crm.WebApi.Models.Requests
 		public EntityReference QuoteId { get; set; }
 		[JsonProperty(NamingStrategyType = typeof(LowerCaseNamingStrategy))]
 		public string Subject { get; set; }
+
+		public QuoteClose(EntityReference quoteId)
+		{
+			QuoteId = quoteId;
+		}
 	}
 }

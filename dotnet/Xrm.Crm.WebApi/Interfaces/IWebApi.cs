@@ -35,8 +35,6 @@ namespace Xrm.Crm.WebApi.Interfaces
         void Execute(IWebApiAction action);
         Task ExecuteAsync(IWebApiAction action);
         
-        void CloseIncident (IncidentResolution incidentResolution, int status);
-        Task CloseIncidentAsync (IncidentResolution incidentResolution, int status);
         void QualifyLead (QualifyLeadRequest action);
         Task<List<Entity>> QualifyLeadAsync (QualifyLeadRequest action);
         string SendEmail (Guid activityId, bool issueSend, string trackingToken);
