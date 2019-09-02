@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
-using Xrm.Crm.WebApi.Exception;
+using Xrm.Crm.WebApi.Exceptions;
 
-namespace Xrm.Crm.WebApi.Request
+namespace Xrm.Crm.WebApi.Models.Requests
 {
     public class RetrieveOptions
     {

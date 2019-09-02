@@ -5,6 +5,7 @@ using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Messages.Actions;
 using Xrm.Crm.WebApi.Models;
 using Xrm.Crm.WebApi.Models.Enums;
+using Xrm.Crm.WebApi.Models.Requests;
 using Xrm.Crm.WebApi.Request;
 using Xrm.Crm.WebApi.Response;
 

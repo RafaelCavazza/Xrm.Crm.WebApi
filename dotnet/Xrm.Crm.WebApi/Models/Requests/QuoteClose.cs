@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Xrm.Crm.WebApi.Serialization;
 
-namespace Xrm.Crm.WebApi.Models
+namespace Xrm.Crm.WebApi.Models.Requests
 {
 	public class QuoteClose
 	{

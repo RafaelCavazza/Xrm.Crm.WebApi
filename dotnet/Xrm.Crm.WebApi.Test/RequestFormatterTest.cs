@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi;
-using Xrm.Crm.WebApi.BatchOperations;
 using Xrm.Crm.WebApi.Models;
 using Xunit;
 using Xrm.Crm.WebApi.Request;

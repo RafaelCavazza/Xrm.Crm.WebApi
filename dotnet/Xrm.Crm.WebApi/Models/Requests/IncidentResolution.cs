@@ -1,4 +1,4 @@
-namespace Xrm.Crm.WebApi.Models
+namespace Xrm.Crm.WebApi.Models.Requests
 {
 	public class IncidentResolution
 	{

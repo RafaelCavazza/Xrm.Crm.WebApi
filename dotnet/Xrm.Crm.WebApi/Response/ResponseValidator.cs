@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi.Exception;
+using Xrm.Crm.WebApi.Exceptions;
 
 namespace Xrm.Crm.WebApi.Response
 {

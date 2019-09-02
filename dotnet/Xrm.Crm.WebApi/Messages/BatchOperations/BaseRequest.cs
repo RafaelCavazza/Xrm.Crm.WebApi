@@ -1,6 +1,6 @@
 using System;
 
-namespace Xrm.Crm.WebApi.BatchOperations
+namespace Xrm.Crm.WebApi.Messages.BatchOperations
 {
     public abstract class BaseRequest
     {

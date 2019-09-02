@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
-using Xrm.Crm.WebApi.BatchOperations;
-using Xrm.Crm.WebApi.Enums;
 using Xrm.Crm.WebApi.Models;
 using Xunit;
 

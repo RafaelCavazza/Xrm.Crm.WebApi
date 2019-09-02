@@ -9,12 +9,13 @@ using Xrm.Crm.WebApi.Authorization;
 using Xrm.Crm.WebApi.Response;
 using Xrm.Crm.WebApi.Request;
 using Xrm.Crm.WebApi.Interfaces;
-using Xrm.Crm.WebApi.Exception;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Xrm.Crm.WebApi.Exceptions;
 using Xrm.Crm.WebApi.Messages.Actions;
 using Xrm.Crm.WebApi.Models;
 using Xrm.Crm.WebApi.Models.Enums;
+using Xrm.Crm.WebApi.Models.Requests;
 using Xrm.Crm.WebApi.Serialization;
 
 namespace Xrm.Crm.WebApi

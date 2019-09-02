@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Xrm.Crm.WebApi.Request
+namespace Xrm.Crm.WebApi.Models.Requests
 {
     public class FetchXmlExpression
     {

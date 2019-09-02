@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xrm.Crm.WebApi.BatchOperations
+namespace Xrm.Crm.WebApi.Messages.BatchOperations
 {
     public class BatchRequest
     {

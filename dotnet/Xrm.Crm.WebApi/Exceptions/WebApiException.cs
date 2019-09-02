@@ -1,4 +1,4 @@
-namespace Xrm.Crm.WebApi.Exception
+namespace Xrm.Crm.WebApi.Exceptions
 {
     public class WebApiException : System.Exception
     {
