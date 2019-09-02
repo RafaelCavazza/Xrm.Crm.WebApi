@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xrm.Crm.WebApi.Authorization;
-using Xrm.Crm.WebApi.Enums;
 using Xrm.Crm.WebApi.Response;
 using Xrm.Crm.WebApi.Request;
 using Xrm.Crm.WebApi.Interfaces;
 using Xrm.Crm.WebApi.Exception;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Xrm.Crm.WebApi.Actions;
+using Xrm.Crm.WebApi.Messages.Actions;
 using Xrm.Crm.WebApi.Models;
+using Xrm.Crm.WebApi.Models.Enums;
 using Xrm.Crm.WebApi.Serialization;
 
 namespace Xrm.Crm.WebApi
@@ -100,11 +100,6 @@ namespace Xrm.Crm.WebApi
             return entity;
         }
 
-        public RetrieveMultipleResponse RetrieveMultiple(string entityCollection, RetrieveOptions options)
-        {
-            return RetrieveMultipleAsync(entityCollection, options).GetAwaiter().GetResult();
-        }
-
         public RetrieveMultipleResponse RetrieveMultiple(FetchXmlExpression fetchXml)
         {
             return RetrieveMultipleAsync(fetchXml).GetAwaiter().GetResult();
@@ -115,6 +110,11 @@ namespace Xrm.Crm.WebApi
             string entityCollection = WebApiMetadata.GetEntitySetName(fetchXml.LogicalName);
             var retrieveOptions = new RetrieveOptions { FetchXml = fetchXml };
             return await RetrieveMultipleAsync(entityCollection, retrieveOptions);
+        }
+
+        public RetrieveMultipleResponse RetrieveMultiple(string entityCollection, RetrieveOptions options)
+        {
+            return RetrieveMultipleAsync(entityCollection, options).GetAwaiter().GetResult();
         }
 
         public async Task<RetrieveMultipleResponse> RetrieveMultipleAsync(string entityCollection, RetrieveOptions options)
@@ -199,6 +199,11 @@ namespace Xrm.Crm.WebApi
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
+        public void Delete(Entity entity)
+        {
+            DeleteAsync(entity).GetAwaiter().GetResult();
+        }
+
         public async Task DeleteAsync(Entity entity)
         {
             string fullUrl = ApiUrl + RequestEntityParser.GetEntityApiUrl(entity, WebApiMetadata);
@@ -211,9 +216,20 @@ namespace Xrm.Crm.WebApi
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
-        public void Delete(Entity entity)
+        public void Execute(IWebApiAction action)
         {
-            DeleteAsync(entity).GetAwaiter().GetResult();
+            ExecuteAsync(action).GetAwaiter().GetResult();
+        }
+
+        public async Task ExecuteAsync(IWebApiAction action)
+        {
+            string json = JsonConvert.SerializeObject(action);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            string fullUrl = ApiUrl + action.RelativeUrl;
+
+            HttpResponseMessage response = await Authorization.GetHttpClient().PostAsync(fullUrl, content);
+            ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
         public void CloseIncident(IncidentResolution incidentResolution, int status)
@@ -246,14 +262,13 @@ namespace Xrm.Crm.WebApi
             ResponseValidator.EnsureSuccessStatusCode(response);
         }
 
-        public void QualifyLead(QualifyLead action)
+        public void QualifyLead(QualifyLeadRequest action)
         {
             QualifyLeadAsync(action).GetAwaiter().GetResult();
         }
 
-        public async Task<List<Entity>> QualifyLeadAsync(QualifyLead action)
+        public async Task<List<Entity>> QualifyLeadAsync(QualifyLeadRequest action)
         {
-
             string fullUrl = $"{ApiUrl}/leads({action.LeadId:P})/Microsoft.Dynamics.CRM.QualifyLead";
             JObject jObject = action.GetRequestObject();
 
@@ -309,16 +324,16 @@ namespace Xrm.Crm.WebApi
             return data["Subject"].ToString();
         }
 
-        public void Merge(Merge merge)
+        public void Merge(MergeRequest mergeRequest)
         {
-            MergeAsync(merge).GetAwaiter().GetResult();
+            MergeAsync(mergeRequest).GetAwaiter().GetResult();
         }
 
-        public async Task MergeAsync(Merge merge)
+        public async Task MergeAsync(MergeRequest mergeRequest)
         {
 
             string fullUrl = $"{ApiUrl}/Merge";
-            JObject requestObject = merge.GetRequestObject(WebApiMetadata);
+            JObject requestObject = mergeRequest.GetRequestObject(WebApiMetadata);
             var request = new HttpRequestMessage(new HttpMethod("POST"), fullUrl)
             {
                 Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json")
