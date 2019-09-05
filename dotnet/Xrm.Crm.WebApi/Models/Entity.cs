@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Models
 {
     public class Entity
     {
@@ -15,13 +15,19 @@ namespace Xrm.Crm.WebApi
         public Entity()
         {
             if(Attributes == null)
+            {
                 Attributes = new Dictionary<string, object>();
+            }
 
             if(FormattedValues == null)
+            {
                 FormattedValues = new Dictionary<string, string>();
+            }
 
             if(KeyAttributes == null)
+            {
                 KeyAttributes = new Dictionary<string, object>();
+            }
         }
 
         public Entity(string logicalName) : this()
@@ -53,7 +59,10 @@ namespace Xrm.Crm.WebApi
             get
             {
                 if (Contains(index))
+                {
                     return Attributes[index];
+                }
+
                 return null;
             }
             set
@@ -65,16 +74,24 @@ namespace Xrm.Crm.WebApi
         public T GetAttributeValue<T>(string atributeName)
         {
             if (!Contains(atributeName))
+            {
                 return default(T);
+            }
 
             if(typeof(T) == typeof(int))
+            {
                 return (T) (object)Convert.ToInt32(Attributes[atributeName]);
+            }
 
             if(( typeof(DateTime) == typeof(T) ||  typeof(DateTime?) == typeof(T) ) && Attributes[atributeName] is string)
+            {
                 return (T) (object) Convert.ToDateTime(Attributes[atributeName]);
+            }
 
-            if(typeof(Guid) == typeof(T) && Attributes[atributeName] is string)                
+            if(typeof(Guid) == typeof(T) && Attributes[atributeName] is string)
+            {
                 return (T) (object) new Guid( (string) Attributes[atributeName]);
+            }
 
             return (T)Attributes[atributeName];
         }
@@ -87,8 +104,10 @@ namespace Xrm.Crm.WebApi
         public bool ContainsValue(string atributeName)
         {        
             if(!Contains(atributeName))
+            {
                 return false;
-            
+            }
+
             return Attributes[atributeName] != null;
         }
     }

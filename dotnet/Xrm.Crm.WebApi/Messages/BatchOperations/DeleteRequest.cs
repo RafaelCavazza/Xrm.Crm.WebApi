@@ -1,7 +1,8 @@
-using Xrm.Crm.WebApi.Request;
 using Newtonsoft.Json;
+using Xrm.Crm.WebApi.Models;
+using Xrm.Crm.WebApi.Request;
 
-namespace Xrm.Crm.WebApi.BatchOperations
+namespace Xrm.Crm.WebApi.Messages.BatchOperations
 {
     public class DeleteRequest : BaseRequest
     {

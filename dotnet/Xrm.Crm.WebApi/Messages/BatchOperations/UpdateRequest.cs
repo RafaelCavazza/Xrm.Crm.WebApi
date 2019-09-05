@@ -1,13 +1,14 @@
-using Xrm.Crm.WebApi.Request;
 using Newtonsoft.Json;
+using Xrm.Crm.WebApi.Models;
+using Xrm.Crm.WebApi.Request;
 
-namespace Xrm.Crm.WebApi.BatchOperations
+namespace Xrm.Crm.WebApi.Messages.BatchOperations
 {
-    public class UpsertRequest : BaseRequest
+    public class UpdateRequest : BaseRequest
     {
         public Entity EntityToUpdate {get; internal set;}
 
-        public UpsertRequest(Entity entityToUpdate)
+        public UpdateRequest(Entity entityToUpdate)
         {
             EntityToUpdate = entityToUpdate;
         }
@@ -39,13 +40,14 @@ namespace Xrm.Crm.WebApi.BatchOperations
             batchString += $"Content-ID: {batchRequest.ContentId}" + NewLine + NewLine;
             batchString += $"PATCH {entityUrl} HTTP/1.1" + NewLine;            
             batchString += $"Content-Type: application/json;type=entry" + NewLine;
+            batchString += "If-Match: *" + NewLine + NewLine;   
             batchString += entityString + NewLine + NewLine;
             return batchString;
         }
 
-        public static implicit operator UpsertRequest(Entity toUpdate)
+        public static implicit operator UpdateRequest(Entity toUpdate)
         {
-                return new UpsertRequest(toUpdate);
+                return new UpdateRequest(toUpdate);
         }
     }
 }

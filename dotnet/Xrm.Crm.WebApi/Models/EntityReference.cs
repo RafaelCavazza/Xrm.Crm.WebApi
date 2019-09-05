@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Models
 {
     public class EntityReference
     {

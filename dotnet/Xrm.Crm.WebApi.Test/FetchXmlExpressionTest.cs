@@ -1,6 +1,8 @@
 using System;
 using Xunit;
 using Xrm.Crm.WebApi;
+using Xrm.Crm.WebApi.Models.Requests;
+using Xrm.Crm.WebApi.Request;
 
 namespace Xrm.Crm.WebApi.Test
 {

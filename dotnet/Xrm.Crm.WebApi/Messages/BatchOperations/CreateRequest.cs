@@ -1,15 +1,16 @@
-using Xrm.Crm.WebApi.Request;
 using Newtonsoft.Json;
+using Xrm.Crm.WebApi.Models;
+using Xrm.Crm.WebApi.Request;
 
-namespace Xrm.Crm.WebApi.BatchOperations
+namespace Xrm.Crm.WebApi.Messages.BatchOperations
 {
-    public class UpdateRequest : BaseRequest
+    public class CreateRequest : BaseRequest
     {
-        public Entity EntityToUpdate {get; internal set;}
+        public Entity EntityToCreate {get; internal set;}
 
-        public UpdateRequest(Entity entityToUpdate)
+        public CreateRequest(Entity entityToCreate)
         {
-            EntityToUpdate = entityToUpdate;
+            EntityToCreate = entityToCreate;
         }
 
         public void ThenUpdate(UpdateRequest nextRequest)
@@ -29,24 +30,23 @@ namespace Xrm.Crm.WebApi.BatchOperations
 
         internal override string GetBatchString(BatchRequest batchRequest, WebApi webApi, int? lastContentId)
         {        
-            var entityUrl = lastContentId != null ? "$" +lastContentId.ToString() : webApi.ApiUrl + RequestEntityParser.GetEntityApiUrl(EntityToUpdate, webApi.WebApiMetadata);
-            var jObject = RequestEntityParser.EntityToJObject(EntityToUpdate, webApi.WebApiMetadata);
+            var entityUrl = lastContentId != null ? "$"+lastContentId.ToString() : webApi.ApiUrl + RequestEntityParser.GetEntityApiUrl(EntityToCreate, webApi.WebApiMetadata);
+            var jObject = RequestEntityParser.EntityToJObject(EntityToCreate, webApi.WebApiMetadata);
             var entityString = JsonConvert.SerializeObject(jObject);
 
             var batchString = $"--changeset_{batchRequest.ChangeSetId.ToString("N")}" + NewLine;
             batchString += $"Content-Type: application/http" + NewLine;
             batchString += $"Content-Transfer-Encoding:binary" + NewLine;
             batchString += $"Content-ID: {batchRequest.ContentId}" + NewLine + NewLine;
-            batchString += $"PATCH {entityUrl} HTTP/1.1" + NewLine;            
-            batchString += $"Content-Type: application/json;type=entry" + NewLine;
-            batchString += "If-Match: *" + NewLine + NewLine;   
+            batchString += $"POST {entityUrl} HTTP/1.1" + NewLine ;
+            batchString += $"Content-Type: application/json;type=entry" + NewLine + NewLine;
             batchString += entityString + NewLine + NewLine;
             return batchString;
         }
 
-        public static implicit operator UpdateRequest(Entity toUpdate)
+        public static implicit operator CreateRequest(Entity toCreate)
         {
-                return new UpdateRequest(toUpdate);
+                return new CreateRequest(toCreate);
         }
     }
 }

@@ -1,9 +1,10 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Xrm.Crm.WebApi.Exception;
+using Xrm.Crm.WebApi.Exceptions;
+using Xrm.Crm.WebApi.Models;
 
-namespace Xrm.Crm.WebApi.Response
+namespace Xrm.Crm.WebApi.Messages.BatchOperations
 {
     public class BatchRequestResponse
     {

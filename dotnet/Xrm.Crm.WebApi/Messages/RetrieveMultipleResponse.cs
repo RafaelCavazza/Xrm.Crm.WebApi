@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using Xrm.Crm.WebApi.Models;
 
 namespace Xrm.Crm.WebApi.Response
 {
