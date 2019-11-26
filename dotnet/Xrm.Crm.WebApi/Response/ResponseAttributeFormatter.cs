@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -82,7 +83,15 @@ namespace Xrm.Crm.WebApi.Response
                 attributes[nestedEntity.Key] = nestedEntity.Value;
 
             foreach (var attribute in newAttributes)
+            {
+                if (attributes.ContainsKey(attribute.Key))
+                {
+                    attributes.Add($"{attribute.Key}_temp_{Guid.NewGuid():N}", attributes[attribute.Key]);
+                    attributes.Remove(attribute.Key);
+                }
+
                 attributes.Add(attribute.Key, attribute.Value);
+            }
 
             var entity = new Entity();
             entity.Attributes = attributes;
