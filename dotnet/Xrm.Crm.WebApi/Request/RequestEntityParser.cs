@@ -11,7 +11,6 @@ namespace Xrm.Crm.WebApi.Request
         public static JObject EntityToJObject(Entity entity, WebApiMetadata webApiMetadata)
         {
             var jObject = new JObject();
-            var entityDefinitions = webApiMetadata.GetEntityDefinitions(entity.LogicalName);
 
             foreach(KeyValuePair<string, object> attibute in entity.Attributes)
             {
@@ -21,7 +20,7 @@ namespace Xrm.Crm.WebApi.Request
 
             return jObject;
         }
-
+        
         public static string EntityReferenceTostring(EntityReference entityReference, WebApiMetadata webApiMetadata)
         {
             string logicalName = entityReference.LogicalName.ToLower();
@@ -70,8 +69,7 @@ namespace Xrm.Crm.WebApi.Request
             return entitySetName;
         }
 
-        public static JProperty GetJTokenFromAttribute(string key, object value, WebApiMetadata webApiMetadata)
-        {
+        public static JProperty GetJTokenFromAttribute(string key, object value, WebApiMetadata webApiMetadata){
 
             switch (value)
             {
