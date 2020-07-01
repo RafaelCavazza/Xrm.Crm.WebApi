@@ -1,4 +1,6 @@
-namespace Xrm.Crm.WebApi.BatchOperations
+using Xrm.Crm.WebApi.Messages.BatchOperations;
+
+namespace Xrm.Crm.WebApi.Request
 {
     internal class BatchRequestParser
     {

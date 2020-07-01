@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Xrm.Crm.WebApi.Enums;
+using Xrm.Crm.WebApi.Models.Enums;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Models
 {
     public class ActivityParty
     {

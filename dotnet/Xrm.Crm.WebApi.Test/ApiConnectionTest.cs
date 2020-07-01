@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
-using Xrm.Crm.WebApi;
 using Xrm.Crm.WebApi.Authorization;
-using Xrm.Crm.WebApi.BatchOperations;
-using Xrm.Crm.WebApi.Enums;
+using Xrm.Crm.WebApi.Models;
 using Xunit;
 
 namespace Xrm.Crm.WebApi.Test
@@ -25,7 +21,7 @@ namespace Xrm.Crm.WebApi.Test
 
         [Fact]
         public void ConnectToCrmTest(){
-            var apiMetadata = WebApi.WebApiMetadata.EntitiesDefinitions.ToList();
+            var apiMetadata = WebApi.WebApiMetadata.EntityDefinitions.ToList();
             Assert.True(apiMetadata.Count > 0);
         }   
 

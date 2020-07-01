@@ -1,4 +1,4 @@
-namespace Xrm.Crm.WebApi.Enums
+namespace Xrm.Crm.WebApi.Models.Enums
 {
     public enum ParticipationTypeMask
     {

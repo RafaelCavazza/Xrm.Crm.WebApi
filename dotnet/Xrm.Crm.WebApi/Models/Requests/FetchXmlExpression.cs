@@ -1,9 +1,7 @@
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
-namespace Xrm.Crm.WebApi
+namespace Xrm.Crm.WebApi.Models.Requests
 {
     public class FetchXmlExpression
     {
@@ -12,11 +10,11 @@ namespace Xrm.Crm.WebApi
 
         public FetchXmlExpression(string fetchXml)
         {
-            document = XDocument.Load(new MemoryStream(Encoding.UTF8.GetBytes(fetchXml.ToLower())));
-            LogicalName = (string) document
-                            .Descendants("entity")
-                            .First()
-                            .Attribute("name");
+            document = XDocument.Parse(fetchXml);
+            LogicalName = document
+                .Descendants("entity")
+                .First()
+                .Attribute("name")?.Value;
         }
 
         public override string ToString()

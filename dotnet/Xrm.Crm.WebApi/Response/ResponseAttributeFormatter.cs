@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using Xrm.Crm.WebApi.Models;
 
 namespace Xrm.Crm.WebApi.Response
 {
@@ -28,6 +30,7 @@ namespace Xrm.Crm.WebApi.Response
 
                 var entityReference = new EntityReference(logicalname, id.ToString());
                 entityReference.Name = complements.FirstOrDefault(c => c.Key.Contains("FormattedValue")).Value?.ToString();
+                entityReference.LookupLogicalName = complements.FirstOrDefault(c => c.Key.Contains("lookuplogicalname")).Value?.ToString();
 
                 var attributeName = FormatAttributeName(key);
                 newAttributes.Add(attributeName, entityReference);
@@ -40,6 +43,7 @@ namespace Xrm.Crm.WebApi.Response
             foreach (var att in toRemove)
                 attributes.Remove(att);
 
+            var nestedEntities = new Dictionary<string, List<Entity>>();
             foreach (var attribute in attributes)
             {
                 if (attribute.Value is JArray)
@@ -56,7 +60,7 @@ namespace Xrm.Crm.WebApi.Response
                             continue;
                         }
                     }
-                    attributes[attribute.Key] = entities;
+                    nestedEntities.Add(attribute.Key, entities);
                     continue;
                 }
 
@@ -75,8 +79,19 @@ namespace Xrm.Crm.WebApi.Response
                     newAttributes.Add(newName, attribute.Value);
             }
 
+            foreach (var nestedEntity in nestedEntities)
+                attributes[nestedEntity.Key] = nestedEntity.Value;
+
             foreach (var attribute in newAttributes)
+            {
+                if (attributes.ContainsKey(attribute.Key))
+                {
+                    attributes.Add($"{attribute.Key}_temp_{Guid.NewGuid():N}", attributes[attribute.Key]);
+                    attributes.Remove(attribute.Key);
+                }
+
                 attributes.Add(attribute.Key, attribute.Value);
+            }
 
             var entity = new Entity();
             entity.Attributes = attributes;
