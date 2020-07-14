@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Xrm.Crm.WebApi.Metadata;
 using Xrm.Crm.WebApi.Models;
 
 namespace Xrm.Crm.WebApi.Serialization

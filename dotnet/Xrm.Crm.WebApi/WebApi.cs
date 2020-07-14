@@ -17,6 +17,7 @@ using Xrm.Crm.WebApi.Models;
 using Xrm.Crm.WebApi.Models.Enums;
 using Xrm.Crm.WebApi.Models.Requests;
 using Xrm.Crm.WebApi.Serialization;
+using Xrm.Crm.WebApi.Metadata;
 
 namespace Xrm.Crm.WebApi
 {
